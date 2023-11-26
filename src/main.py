@@ -15,6 +15,7 @@ if __name__ == '__main__':
         mutation=0.1,
         epoch=100,
         early_stop=True,
+        debug=True,
     )
     algorithm.evolve()
     melody = algorithm._choose_best()

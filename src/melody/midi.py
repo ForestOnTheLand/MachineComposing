@@ -9,24 +9,34 @@ def save_midi(
     path: str,
     *,
     instrument: int = 0,
-    velocity: int | float = 100,
-    time: int | float = 240,
+    velocity: int = 64,
+    time: int = 240,
 ) -> None:
     """
-    ### Parameters
-    1. `melody`: `Melody`
-        See class `Melody` and `Note` for more detailed information.
-    2. `path`: `str`
+    Save a melody into a midi file
+    
+    Parameters
+    ----------
+    `melody` : `Melody`
+        The melody
+    `path` : `str`
         Path of output file
-    3. `instrument`: `int`, default: 0 (Acoustic Grand Piano).
+    `instrument` : `int`, optional
         Instrument type, from 0 to 127. 
-        See https://blog.csdn.net/ruyulin/article/details/84103186 for more details
-
+        See https://blog.csdn.net/ruyulin/article/details/84103186 for more details.
+        By default `0`.
+    `velocity` : `int`, optional
+        Volume of voice, from 0 ro 127.
+        By default `64`.
+    `time` : `int`, optional
+        Time of a eighth note.
+        By default `240`
+    
     Raises
-    ---
-    `ValueError` if begin with a prolongation note.
+    ------
+    `ValueError`
+        if melody is not convertable to Melody.
     """
-
     if not isinstance(melody, Melody):
         melody = Melody(melody)
 
@@ -39,17 +49,17 @@ def save_midi(
     i: int = 0
     pause: int = 0
     while i < length:
-        if int(melody[i]) == 0:
+        if melody[i].id == 0:
             pause += 1
             i += 1
-            while i < length and int(melody[i]) == Note.NUM + 1:
+            while i < length and melody[i].id == Note.NUM + 1:
                 pause += 1
                 i += 1
-        elif 1 <= int(melody[i]) <= Note.NUM:
-            note: int = int(melody[i]) + 52
+        elif 1 <= melody[i].id <= Note.NUM:
+            note: int = melody[i].id + 52
             duration: int = 1
             i += 1
-            while i < length and int(melody[i]) == Note.NUM + 1:
+            while i < length and melody[i].id == Note.NUM + 1:
                 duration += 1
                 i += 1
             track.append(Message('note_on', note=note, velocity=velocity, time=time * pause))

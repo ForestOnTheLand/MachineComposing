@@ -19,7 +19,7 @@ class Note:
     # private
     __id: int
 
-    def __init__(self, note: str | int) -> None:
+    def __init__(self, note: Self | str | int) -> None:
         if isinstance(note, Note):
             self.__id = note.__id
         elif isinstance(note, str):
@@ -60,15 +60,6 @@ class Note:
         else:
             raise ValueError(f"invalid argument type: {type(other)}")
 
-    def __rsub__(self, other: int | Self) -> Self | int:
-        if isinstance(other, int):
-            return Note(other - self.__id)
-        else:
-            raise ValueError(f"invalid argument type: {type(other)}")
-
-    def __eq__(self, other: int | str | Self) -> bool:
-        return self.__id == Note(other).__id
-
 
 class Melody:
     """
@@ -76,10 +67,8 @@ class Melody:
     """
     __data: List[Note]
 
-    def __init__(self, data: Sequence[Note | int | str]) -> None:
-        if isinstance(data, Melody):
-            self.__data = data.__data
-        if isinstance(data, Sequence):
+    def __init__(self, data: Self | Sequence[Note | int | str]) -> None:
+        if isinstance(data, Melody) or isinstance(data, Sequence):
             self.__data = [Note(a) for a in data]
         else:
             raise ValueError(f"expect a sequence, given {type(data)}")
@@ -87,69 +76,57 @@ class Melody:
     def __len__(self) -> int:
         return len(self.__data)
 
-    def __getitem__(self, index: int | slice) -> Note:
+    def __getitem__(self, index: int | slice) -> Note | List[Note]:
         return self.__data[index]
+
+    def __setitem__(self, index: int | slice, value: Note | List[Note]) -> None:
+        if isinstance(index, int) and isinstance(value, Note):
+            self.__data[index] = Note(value)
+        elif isinstance(index, slice) and isinstance(value, list):
+            for i, val in zip(index.indices(len(self.__data)), value):
+                self.__data[i] = Note(val)
 
     def __str__(self) -> str:
         return str([str(note) for note in self.__data])
 
-    @classmethod
-    def cross(cls, a: Self, b: Self, index: int) -> Self:
-        """
-        ### Brief
-        cross-over operation. 
+    # TODO: The following functions should be put in algorithm.operation later!
+    # Some might be buggy
 
-        ### Parameter
-        1. `a`, `b`: `Melody`
-            Melody parents
-        2. `index`: `int`
-            indices, concat a[:index] and b[index:]
+    # def transposition(self, delta: int, start: int = 0, stop: Optional[int] = None) -> None:
+    #     if stop is None:
+    #         stop = len(self.__data)
+    #     for i in range(start, stop):
+    #         if self.__data[i] != 0 and self.__data[i] != Note.NUM + 1:
+    #             self.__data[i] += delta
 
-        Raises
-        ---
-        `ValueError` if type unmatched
-        """
-        if not isinstance(a, Melody) or not isinstance(b, Melody):
-            raise ValueError(f"expected Melody: a/b, given {type(a), type(b)}")
-        if not isinstance(index, int):
-            raise ValueError(f"expected int: start/end, given {type(index)}")
-        return Melody(a.__data[:index] + b.__data[index:])
+    # def retrograde(self, start: int = 0, stop: Optional[int] = None) -> None:
+    #     if stop is None:
+    #         stop = len(self.__data)
 
-    def transposition(self, delta: int, start: int = 0, stop: Optional[int] = None) -> None:
-        if stop is None:
-            stop = len(self.__data)
-        for i in range(start, stop):
-            if self.__data[i] != 0 and self.__data[i] != Note.NUM + 1:
-                self.__data[i] += delta
+    #     while self.__data[start] == Note.NUM + 1:
+    #         start += 1
+    #     while self.__data[stop] == Note.NUM + 1:
+    #         stop += 1
 
-    def retrograde(self, start: int = 0, stop: int = None) -> None:
-        if stop is None:
-            stop = len(self.__data)
+    #     old = self.__data[start:stop]
+    #     new = []
 
-        while self.__data[start] == Note.NUM + 1:
-            start += 1
-        while self.__data[stop] == Note.NUM + 1:
-            stop += 1
+    #     i: int = 0
+    #     j: int
 
-        old = self.__data[start:stop]
-        new = []
+    #     while i < len(old):
+    #         j = i + 1
+    #         while j < len(old) and old[j] == Note.NUM + 1:
+    #             j += 1
+    #         new = old[i:j] + new
+    #         i = j
 
-        i: int = 0
-        j: int
+    #     self.__data[start:stop] = new
 
-        while i < len(old):
-            j = i + 1
-            while j < len(old) and old[j] == Note.NUM + 1:
-                j += 1
-            new = old[i:j] + new
-            i = j
-
-        self.__data[start:stop] = new
-
-    def inversion(self, double_mid: int, start: int, stop: int) -> None:
-        for i in range(*slice(start, stop).indices(len(self.__data))):
-            if self.__data[i] != 0 and self.__data[i] != Note.NUM + 1:
-                self.__data[i] = double_mid - self.__data[i]
+    # def inversion(self, double_mid: int, start: int, stop: int) -> None:
+    #     for i in range(*slice(start, stop).indices(len(self.__data))):
+    #         if self.__data[i].id != 0 and self.__data[i].id != Note.NUM + 1:
+    #             self.__data[i] = Note(double_mid - self.__data[i].id)
 
     def mutate(self) -> None:
         # possible = [i for (i, note) in enumerate(self.__data) if note != Note.NUM + 1]

@@ -2,6 +2,7 @@ from typing import List, Tuple, Callable
 from melody import Note, Melody
 import random, math
 from util.selection import RouletteSelection
+from .operation import cross
 
 
 class GeneticAlgorithm:
@@ -56,13 +57,13 @@ class GeneticAlgorithm:
         self.score = [self.score_function(melody) for melody in self.population]
         for score, melody in zip(self.score, self.population):
             if score > self.threshold:
-                self.good_music.append([melody, score])
+                self.good_music.append((melody, score))
             pass
 
     def _choose_random(self) -> Melody:
         selector = RouletteSelection(len(self.score))
         for score in self.score:
-            selector.submit(math.exp(score) - 1)
+            selector.submit(score)
         return self.population[selector.selected_index()]
 
     def _choose_best(self) -> Melody:
@@ -82,8 +83,7 @@ class GeneticAlgorithm:
                 return
             new_population = [self._choose_best()]
             for i in range(1, len(self.population)):
-                child = Melody.cross(self._choose_random(), self._choose_random(),
-                                     random.randint(0, 32))
+                child = cross(self._choose_random(), self._choose_random(), random.randint(0, 32))
                 if random.random() < self.mutation:
                     child.mutate()
                 new_population.append(child)
