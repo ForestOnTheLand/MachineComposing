@@ -47,16 +47,24 @@ class Note:
         return Note.NAME_LIST[self.__id]
 
     def __add__(self, delta: int) -> Self:
+        if not isinstance(delta, int):
+            raise ValueError(f"expected int, given {type(delta)}")
         return Note(self.__id + delta)
+
+    def __iadd__(self, delta: int) -> Self:
+        if not isinstance(delta, int):
+            raise ValueError(f"expected int, given {type(delta)}")
+        self.__id += delta
+        return self
 
     def __radd__(self, delta: int) -> Self:
+        if not isinstance(delta, int):
+            raise ValueError(f"expected int, given {type(delta)}")
         return Note(self.__id + delta)
 
-    def __sub__(self, other: Self | int) -> int | Self:
+    def __sub__(self, other: int) -> Self:
         if isinstance(other, int):
             return Note(self.__id - other)
-        elif isinstance(other, Note):
-            return (self.__id - other.__id)
         else:
             raise ValueError(f"invalid argument type: {type(other)}")
 
@@ -68,7 +76,7 @@ class Melody:
     __data: List[Note]
 
     def __init__(self, data: Self | Sequence[Note | int | str]) -> None:
-        if isinstance(data, Melody) or isinstance(data, Sequence):
+        if isinstance(data, (Melody, Sequence)):
             self.__data = [Note(a) for a in data]
         else:
             raise ValueError(f"expect a sequence, given {type(data)}")
@@ -76,8 +84,24 @@ class Melody:
     def __len__(self) -> int:
         return len(self.__data)
 
+    @overload
+    def __getitem__(self, index: int) -> Note:
+        ...
+
+    @overload
+    def __getitem__(self, index: slice) -> List[Note]:
+        ...
+
     def __getitem__(self, index: int | slice) -> Note | List[Note]:
         return self.__data[index]
+
+    @overload
+    def __setitem__(self, index: int, value: Note) -> None:
+        ...
+
+    @overload
+    def __setitem__(self, index: slice, value: List[Note]) -> None:
+        ...
 
     def __setitem__(self, index: int | slice, value: Note | List[Note]) -> None:
         if isinstance(index, int) and isinstance(value, Note):
@@ -123,13 +147,7 @@ class Melody:
 
     #     self.__data[start:stop] = new
 
-    # def inversion(self, double_mid: int, start: int, stop: int) -> None:
+    # def inversion(self, s: int, start: Optional[int] = None, stop: Optional[int] = None) -> None:
     #     for i in range(*slice(start, stop).indices(len(self.__data))):
     #         if self.__data[i].id != 0 and self.__data[i].id != Note.NUM + 1:
-    #             self.__data[i] = Note(double_mid - self.__data[i].id)
-
-    def mutate(self) -> None:
-        # possible = [i for (i, note) in enumerate(self.__data) if note != Note.NUM + 1]
-        # index = random.choice(possible)
-        index = random.randint(0, len(self) - 1)
-        self.__data[index] = Note(random.randint(0, Note.NUM))
+    #             self.__data[i] = Note(s - self.__data[i].id)

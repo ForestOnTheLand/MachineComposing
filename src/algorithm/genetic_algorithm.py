@@ -2,52 +2,78 @@ from typing import List, Tuple, Callable
 from melody import Note, Melody
 import random, math
 from util.selection import RouletteSelection
-from .operation import cross
+from .operation import one_point_cross
 
 
 class GeneticAlgorithm:
 
-    population: List[Melody]
+    # Functions
     score_function: Callable[[Melody], float]
+    mutate_function: Callable[[Melody], None]
+    cross_function: Callable[[Melody, Melody], Melody]
+
+    # Music
+    population: List[Melody]
+    good_music: List[Tuple[Melody, float]]
+
+    # Hyper-parameters
     threshold: float
+    mutation_rate: float
     epoch: int
 
-    good_music: List[Tuple[Melody, float]]
+    # Options
+    early_stop: bool
+    debug: bool
 
     def __init__(
         self,
         population: List[Melody],
-        score_function: Callable[[Melody], float],
         threshold: float,
-        mutation: float,
+        mutation_rate: float,
         epoch: int,
+        score_function: Callable[[Melody], float],
+        mutate_function: Callable[[Melody], None],
+        cross_function: Callable[[Melody, Melody], Melody],
         *,
         early_stop: bool = False,
         debug: bool = False,
     ) -> None:
-        """constructor.
-
+        """
+        constructor of Genetic Algorithm.
+        
+        
         Parameters
         ----------
         `population` : `List[Melody]`
-            initial population
-        `score_function` : `Callable[[Melody], float]`
-            score function
+            Initial population.
         `threshold` : `float`
-            the threshold for a good music
+            The threshold for good music.
+        `mutation_rate` : `float`
+            Mutation probability.
         `epoch` : `int`
-            max iterations
+            Number of iterations.
+        `score_function` : `Callable[[Melody], float]`
+            Score function.
+            See module `algorithm.fitness` for more information.
+        `mutate_function` : `Callable[[Melody], None]`
+            Mutate function.
+            See module `algorithm.operation` for more information.
+        `cross_function` : `Callable[[Melody, Melody], Melody]`
+            Cross function.
+            See module `algorithm.operation` for more information.
         `early_stop` : `bool`, optional
-            if `True`, the algorithm will stop early if there is a melody good enough.
-            By default False
+            If True, the algorithm will stop immediately when a good music is found.
+            By default `False`.
         `debug` : `bool`, optional
-            if `True`, additional debug info will be printed.
-            By default False
+            If True, additional debug info will be printed.
+            By default `False`.
         """
         self.population = population
         self.score_function = score_function
+        self.mutate_function = mutate_function
+        self.cross_function = cross_function
         self.threshold = threshold
-        self.mutation = mutation
+        self.mutation_rate = mutation_rate
         self.epoch = epoch
         self.early_stop = early_stop
         self.debug = debug
@@ -60,13 +86,13 @@ class GeneticAlgorithm:
                 self.good_music.append((melody, score))
             pass
 
-    def _choose_random(self) -> Melody:
+    def choose_random(self) -> Melody:
         selector = RouletteSelection(len(self.score))
         for score in self.score:
             selector.submit(score)
         return self.population[selector.selected_index()]
 
-    def _choose_best(self) -> Melody:
+    def choose_best(self) -> Melody:
         best_id = 0
         for i in range(1, len(self.score)):
             if self.score[i] > self.score[best_id]:
@@ -81,11 +107,11 @@ class GeneticAlgorithm:
                 print(self.score)
             if self.early_stop and len(self.good_music):
                 return
-            new_population = [self._choose_best()]
+            new_population = [self.choose_best()]
             for i in range(1, len(self.population)):
-                child = cross(self._choose_random(), self._choose_random(), random.randint(0, 32))
-                if random.random() < self.mutation:
-                    child.mutate()
+                child = self.cross_function(self.choose_random(), self.choose_random())
+                if random.random() < self.mutation_rate:
+                    self.mutate_function(child)
                 new_population.append(child)
             self.population = new_population
             if self.debug:
