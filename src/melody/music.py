@@ -36,12 +36,20 @@ class Note:
         else:
             raise ValueError(f"invalid note type: {type(note)}")
 
-    def __int__(self):
-        return self.__id
+    # def __int__(self):
+    #     return self.__id
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self.__id
+
+    @id.setter
+    def id(self, id: int) -> None:
+        if not isinstance(id, int):
+            raise ValueError(f"expected int, given {type(id)}")
+        if not 0 <= id <= Note.NUM + 1:
+            raise ValueError(f"expect note in [0, 28], given {id}")
+        self.__id = id
 
     def __str__(self):
         return Note.NAME_LIST[self.__id]

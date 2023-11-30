@@ -48,6 +48,5 @@ def two_points_cross(a: Melody, b: Melody, indices: Tuple[int, int]) -> Melody:
     return Melody(a[:left] + b[left:right] + a[right:])
 
 
-def one_point_mutate(melody: Melody) -> None:
-    index = random.randint(0, len(melody) - 1)
+def one_point_mutate(melody: Melody, index: int) -> None:
     melody[index] = Note(random.randint(0, Note.NUM))
