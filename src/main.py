@@ -7,8 +7,15 @@ little_star = Melody([
     10, 28, 10, 28, 8, 28, 28, 28
 ])
 
+# B flat major
+NAME_LIST = [
+    " ", "F3", "G3", "A3", "#A3", "C4", "D4", "#D4", "F4",
+    "G4", "A4", "#A4", "C5", "D5", "#D5", "F5", "G5",
+    "-"
+]
+
 if __name__ == '__main__':
-    generator = RandomGenerator(32)
+    generator = RandomGenerator(32,NAME_LIST)
     algorithm = GeneticAlgorithm(
         [generator() for _ in range(10)],
         threshold=0.99,
@@ -17,7 +24,7 @@ if __name__ == '__main__':
         score_function=lambda x: fitness.interval_score(x),
         mutate_function=lambda x: operation.one_point_mutate(x),
         cross_function=lambda x, y: operation.one_point_cross(x, y, random.randint(0, 32)),
-        early_stop=True,
+        early_stop=False,
         debug=True,
     )
     algorithm.evolve()
