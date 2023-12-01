@@ -46,13 +46,13 @@ pip install pygame
       ```
 
   - `./src/algorithm/operation.py`: 交叉、变异函数。**推荐增加内容**。
-    - 单点杂交：$\text{ab}+\text{xy}\to \text{ay}$
+    - 单点杂交： $\text{ab}+\text{xy}\to \text{ay}$
 
       ```py
       def one_point_cross(a: Melody, b: Melody, index: int) -> Melody:...
       ```
 
-    - 两点杂交：$\text{abc}+\text{xyz}\to \text{ayc}$
+    - 两点杂交： $\text{abc}+\text{xyz}\to \text{ayc}$
 
       ```py
       def two_points_cross(a: Melody, b: Melody, indices: Tuple[int, int]) -> Melody:...
@@ -73,11 +73,9 @@ pip install pygame
     from melody import Note, Melody, save_midi, play_midi
     ```
 
-  - `Note`类：音符。按[作业要求](./resource/projects23b.pdf)中的说明，有$29$种，编号$0$到$28$，其中
-    $$
-    S=\{\text{F}_3,\sharp\text{F}_3,\cdots,\sharp\text{F}_5,\text{G}_5\}
-    $$
-    共$27$种音级，编号$1$到$27$; 休止符编号$0$; 延长符号编号$28$. 以上这些音符默认为8分音符，延长符号将它前面一个音符的时值加上一个8分音符的长度。目前支持转化为`str`（即打印出来）；可以通过`note.id`访问编号。
+  - `Note`类：音符。按[作业要求](./resource/projects23b.pdf)中的说明，有 $29$ 种，编号 $0$ 到 $28$ ，其中
+    $$S=\left\lbrace\text{F}_3,\sharp\text{F}_3,\cdots,\sharp\text{F}_5,\text{G}_5\right\rbrace$$
+    共 $27$ 种音级，编号 $1$ 到 $27$; 休止符编号 $0$; 延长符号编号 $28$. 以上这些音符默认为8分音符，延长符号将它前面一个音符的时值加上一个8分音符的长度。目前支持转化为`str`（即打印出来）；可以通过`note.id`访问编号。
 
   - `Melody`类：旋律。旋律就是一系列`Note`的列表。
 
