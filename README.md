@@ -1,5 +1,19 @@
 # 音乐与数学 大作业
 
+- [音乐与数学 大作业](#音乐与数学-大作业)
+  - [`Python`环境配置](#python环境配置)
+  - [文件结构](#文件结构)
+  - [代码结构](#代码结构)
+    - [`algorithm`](#algorithm)
+      - [`algorithm.fitness`](#algorithmfitness)
+      - [`algorithm.operation`](#algorithmoperation)
+      - [`algorithm.init`](#algorithminit)
+      - [`algorithm.genetic`](#algorithmgenetic)
+    - [`melody`](#melody)
+    - [`util`](#util)
+  - [注意事项](#注意事项)
+  - [待办事项](#待办事项)
+
 ## `Python`环境配置
 
 本项目需要`mido`库与`pygame`库的安装。环境配置如下：
@@ -26,61 +40,79 @@ pip install pygame
 
 在`./src`目录下，各文件/文件夹功能如下：
 
-- `./src/algorithm`: 遗传算法所在文件夹。
+### [`algorithm`](./src/algorithm/)
 
-    ```py
-    from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
-    ```
+遗传算法所在文件夹。
 
-  - `./src/algorithm/fitness.py`: 适应度函数。**推荐增加内容**。
-    - 音程协和程度
+```python
+from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
+```
 
-      ```py
-      def interval_score(melody: Melody) -> float:...
-      ```
+#### [`algorithm.fitness`](./src/algorithm/fitness.py)
 
-    - 音符多样性
+适应度函数。**推荐增加内容**。
 
-      ```py
-      def variety_score(melody: Melody) -> float:...
-      ```
+- 音程协和程度
 
-  - `./src/algorithm/operation.py`: 交叉、变异函数。**推荐增加内容**。
-    - 单点杂交： $\text{ab}+\text{xy}\to \text{ay}$
+  ```python
+  def interval_score(melody: Melody) -> float:...
+  ```
 
-      ```py
-      def one_point_cross(a: Melody, b: Melody, index: int) -> Melody:...
-      ```
+- 音符多样性
 
-    - 两点杂交： $\text{abc}+\text{xyz}\to \text{ayc}$
+  ```python
+  def variety_score(melody: Melody) -> float:...
+  ```
 
-      ```py
-      def two_points_cross(a: Melody, b: Melody, indices: Tuple[int, int]) -> Melody:...
-      ```
+#### [`algorithm.operation`](./src/algorithm/operation.py)
 
-    - 单点变异
+交叉、变异函数。**推荐增加内容**。
 
-      ```py
-      def one_point_mutate(melody: Melody, index: int) -> None:...
-      ```
+- 单点杂交： $\text{ab}+\text{xy}\to \text{ay}$
 
-  - `./src/algorithm/initial.py`: 初始种群生成。现在只有随机生成初始种群，未来有需要可以增加从`.json`文件导入。
-  - `./src/algorithm/genetic_algorithm.py`: 遗传算法框架。
+  ```python
+  def one_point_cross(a: Melody, b: Melody, index: int) -> Melody:...
+  ```
 
-- `./src/melody`: 主要工作是实现`midi`文件的保存，播放；`Note`, `Melody`类。
+- 两点杂交： $\text{abc}+\text{xyz}\to \text{ayc}$
 
-    ```py
-    from melody import Note, Melody, save_midi, play_midi
-    ```
+  ```python
+  def two_points_cross(a: Melody, b: Melody, indices: Tuple[int, int]) -> Melody:...
+  ```
 
-  - `Note`类：音符。按[作业要求](./resource/projects23b.pdf)中的说明，有 $29$ 种，编号 $0$ 到 $28$ ，其中
+- 单点变异
+
+  ```python
+  def one_point_mutate(melody: Melody, index: int) -> None:...
+  ```
+
+#### [`algorithm.init`](./src/algorithm/init.py)
+
+初始种群生成。现在只有随机生成初始种群，未来有需要可以增加从文件导入。
+
+#### [`algorithm.genetic`](./src/algorithm/genetic.py)
+
+遗传算法框架。
+
+### [`melody`](./src/melody/)
+
+主要工作是实现`midi`文件的保存与播放、`Note`, `Melody`类
+
+```python
+from melody import Note, Melody, save_midi, play_midi
+```
+
+- `Note`类：音符。按[作业要求](./resource/projects23b.pdf)中的说明，有 $29$ 种，编号 $0$ 到 $28$ ，其中
     $$S=\left\lbrace\text{F}_3,\sharp\text{F}_3,\cdots,\sharp\text{F}_5,\text{G}_5\right\rbrace$$
     共 $27$ 种音级，编号 $1$ 到 $27$; 休止符编号 $0$; 延长符号编号 $28$. 以上这些音符默认为8分音符，延长符号将它前面一个音符的时值加上一个8分音符的长度。目前支持转化为`str`（即打印出来）；可以通过`note.id`访问编号。
 
-  - `Melody`类：旋律。旋律就是一系列`Note`的列表。
+- `Melody`类：旋律。旋律就是一系列`Note`的列表。
 
-- `./src/util`: 一些小工具，但与代码框架无关。必要时可以自行增加，并在此处简要描述。小工具罗列如下：
-  - `RouletteSelection`类：轮盘赌算法。
+### [`util`](./src/util/)
+
+一些小工具，但与代码框架无关。必要时可以自行增加，并在此处简要描述。小工具罗列如下
+
+- `RouletteSelection`类：轮盘赌算法。
 
 ## 注意事项
 

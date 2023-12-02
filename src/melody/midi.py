@@ -10,7 +10,7 @@ def save_midi(
     *,
     instrument: int = 0,
     velocity: int = 64,
-    time: int = 300,
+    time: int = 240,
 ) -> None:
     """
     Save a melody into a midi file

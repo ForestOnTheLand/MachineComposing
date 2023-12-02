@@ -1,1 +1,1 @@
-from .selection import RouletteSelection
+from .selection import RouletteSelection, random_interval
