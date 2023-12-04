@@ -68,6 +68,16 @@ class Note:
         else:
             raise ValueError(f"invalid argument type: {type(other)}")
 
+    def __eq__(self, other: str | int | Self):
+        if isinstance(other, Note):
+            return self.id == other.id
+        elif isinstance(other, int):
+            return self.id == other
+        elif isinstance(other, str):
+            return self.NAME_LIST[self.id] == other
+        else:
+            raise ValueError(f"invalid argument type: {type(other)}")
+
 
 class Melody:
     """
@@ -151,3 +161,52 @@ class Melody:
     #     for i in range(*slice(start, stop).indices(len(self.__data))):
     #         if self.__data[i].id != 0 and self.__data[i].id != Note.NUM + 1:
     #             self.__data[i] = Note(s - self.__data[i].id)
+
+
+class Tonality:
+    """
+        The tonality is s set of notes
+    """
+    Note_List: List[int]
+
+    MODES = {
+        "major": [2, 2, 1, 2, 2, 2, 1],
+        "minor": [2, 1, 2, 2, 1, 2, 2]
+    }
+
+    def __init__(self, principal_note: Note | str | int, mode: str):
+
+        if mode not in Tonality.MODES.keys():
+            print(f"invalid mode : {mode}")
+        principal_note = Note(principal_note)
+        if principal_note.id <= 0 or principal_note.id > Note.NUM:
+            print(f"invalid note : {principal_note.NAME_LIST[principal_note.id]}")
+
+        mode_len = len(Tonality.MODES[mode])
+
+        note_id = principal_note.id
+        k = mode_len - 1
+        self.Note_List = []
+        while note_id > 0:
+            self.Note_List.append(note_id)
+            note_id -= Tonality.MODES[mode][k]
+            k = (k + mode_len - 1) % mode_len
+        note_id = principal_note.id + Tonality.MODES[mode][0]
+        k = 1
+        while note_id <= Note.NUM:
+            self.Note_List.append(note_id)
+            note_id += Tonality.MODES[mode][k]
+            k = (k + 1) % mode_len
+            k = (k + 1) % mode_len
+
+    def __iter__(self):
+        return iter([Note(i) for i in self.Note_List])
+
+    def harmony(self, melody: Melody) -> bool:
+        return False not in [note in self.Note_List for note in melody]
+
+    def fitness(self, melody: Melody) -> float:
+        return sum([note in self.Note_List for note in melody]) / len(melody)
+
+    def __len__(self):
+        return len(self.Note_List)

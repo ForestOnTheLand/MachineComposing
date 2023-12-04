@@ -16,3 +16,4 @@ class RandomGenerator:
             melody.append(random.choice(self.name_list))
             melody += [Note.NUM + 1] * random.randint(0, 3)
         return Melody(melody[:self.length])
+

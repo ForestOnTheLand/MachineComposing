@@ -1,4 +1,4 @@
-from melody import save_midi, play_midi, Melody, Note
+from melody import save_midi, play_midi, Melody, Note, Tonality
 from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
 import random
 
