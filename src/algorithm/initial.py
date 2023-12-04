@@ -3,7 +3,6 @@ import random
 from typing import List
 
 
-
 class RandomGenerator:
 
     def __init__(self, length: int = 32, name_list: List[int|str|Note] = Note.NAME_LIST[:-1] ) -> None:
@@ -16,4 +15,3 @@ class RandomGenerator:
             melody.append(random.choice(self.name_list))
             melody += [Note.NUM + 1] * random.randint(0, 3)
         return Melody(melody[:self.length])
-
