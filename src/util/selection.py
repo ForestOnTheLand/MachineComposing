@@ -1,5 +1,6 @@
 import sys
 import random
+from typing import Tuple
 
 
 class RouletteSelection:
@@ -22,3 +23,8 @@ class RouletteSelection:
 
     def selected_index(self) -> int:
         return self._index
+
+
+def random_interval(length: int) -> Tuple[int, int]:
+    a, b = random.randint(0, length), random.randint(0, length)
+    return (a, b) if a < b else (b, a)

@@ -1,11 +1,10 @@
 from melody import Melody, Note
 import random
-from typing import List
-
+from typing import Sequence
 
 class RandomGenerator:
 
-    def __init__(self, length: int = 32, name_list: List[int|str|Note] = Note.NAME_LIST[:-1] ) -> None:
+    def __init__(self, length: int = 32, name_list: Sequence = Note.NAME_LIST[:-1]) -> None:
         self.length = length
         self.name_list = name_list
 

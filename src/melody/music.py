@@ -36,12 +36,17 @@ class Note:
         else:
             raise ValueError(f"invalid note type: {type(note)}")
 
-    def __int__(self):
+    @property
+    def id(self) -> int:
         return self.__id
 
-    @property
-    def id(self):
-        return self.__id
+    @id.setter
+    def id(self, id: int) -> None:
+        if not isinstance(id, int):
+            raise ValueError(f"expected int, given {type(id)}")
+        if not 0 <= id <= Note.NUM + 1:
+            raise ValueError(f"expect note in [0, 28], given {id}")
+        self.__id = id
 
     def __str__(self):
         return Note.NAME_LIST[self.__id]
@@ -115,13 +120,18 @@ class Melody:
 
     def __setitem__(self, index: int | slice, value: Note | List[Note]) -> None:
         if isinstance(index, int) and isinstance(value, Note):
-            self.__data[index] = Note(value)
+            self.__data[index] = value
         elif isinstance(index, slice) and isinstance(value, list):
-            for i, val in zip(index.indices(len(self.__data)), value):
-                self.__data[i] = Note(val)
+            for i, val in zip(range(*index.indices(len(self.__data))), value):
+                self.__data[i] = val
 
     def __str__(self) -> str:
         return str([str(note) for note in self.__data])
+
+    def __eq__(self, other: Self) -> bool:
+        if not isinstance(other, Melody):
+            raise ValueError(f"expected Melody, given {type(other)}")
+        return all(a.id == b.id for a, b in zip(self.__data, other.__data))
 
     # TODO: The following functions should be put in algorithm.operation later!
     # Some might be buggy
