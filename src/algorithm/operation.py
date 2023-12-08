@@ -110,9 +110,7 @@ def retrograde(melody: Melody, indices: Tuple[int, Optional[int]] = (0, None)) -
             j += 1
         new_notes = old_notes[i:j] + new_notes
         i = j
-    print([str(note) for note in old_notes])
-    print([str(note) for note in new_notes])
-    print(stop)
+
     melody[start:stop] = new_notes
 
 

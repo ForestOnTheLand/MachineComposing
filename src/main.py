@@ -35,20 +35,19 @@ if __name__ == '__main__':
         threshold=0.99,
         mutation_rate=0.1,
         epoch=100,
-        score_function=lambda x: fitness.interval_score(x) + max(
-            fitness.rhythm_score(x) * 2 - 1, 0),
+        score_function=lambda x: 0.4 * fitness.
+        interval_score(x) + 0.4 * fitness.rhythm_score(x) + 0.6 * fitness.tonality_score(
+            x, "major") - fitness.density_penalty(x) - fitness.stop_penalty(x),
         mutate_function=mutate,
         cross_function=lambda x, y: operation.two_points_cross(x, y, random_interval(32)),
         early_stop=False,
-        debug=True,
+        debug=False,
     )
-    for melody in algorithm.population:
-        print(melody)
     algorithm.evolve()
     melody = algorithm.choose_best()
     print(melody)
     print(
-        f"{fitness.interval_score(melody)}, {fitness.variety_score(melody)}, {fitness.rhythm_score(melody)}"
+        f"{fitness.interval_score(melody)}, {fitness.rhythm_score(melody)}, {fitness.tonality_score(melody, 'major')}"
     )
-    save_midi(melody, './tmp.mid')
+    save_midi(melody, './tmp.mid', instrument=1)
     play_midi('./tmp.mid')
