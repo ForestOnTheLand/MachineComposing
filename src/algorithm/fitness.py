@@ -17,6 +17,8 @@ xxx_penalty: Specially punish extremely bad individuals.
 from melody import Melody, Note, Tonality, TONALITY
 from typing import List
 
+# Score functions
+
 
 def interval_score(melody: Melody) -> float:
     if len(melody) <= 1:
@@ -97,11 +99,15 @@ def rhythm_score(melody: Melody) -> float:
         bars.append(melody[i * 8:(i + 1) * 8])
     for i in range(1, len(bars)):
         diff += rhythm_diff(bars[i - 1], bars[i])
-    return 1 - diff / (8 * len(bars))
+    ratio = 1 - diff / (8 * len(bars))
+    return min(ratio / 0.9, 1.0)
+
+
+# Penalty functions
 
 
 def density_penalty(melody: Melody) -> float:
-    """Avoid melody with extremely low density.
+    """Avoid melody with extremely low/high density.
 
     Parameters
     ----------
@@ -112,11 +118,13 @@ def density_penalty(melody: Melody) -> float:
     -------
     `float`
         Penalty in [0.0, 1.0]. 0.0 for most melodies, but a non-zero value for
-        melodies with extremely low density.
+        melodies with extremely low/high density.
     """
     note_num = sum(1 <= note.id <= Note.NUM for note in melody)
     density = note_num / len(melody)
-    if density > 16 / 32:
+    if density > 7 / 8:
+        return (density - 7 / 8) / (1 - 7 / 8)
+    elif density > 16 / 32:
         return 0.0
     elif density > 10 / 32:
         return ((16 / 32) - density) / ((16 / 32) - (10 / 32))

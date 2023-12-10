@@ -6,13 +6,14 @@
   - [代码结构](#代码结构)
     - [`algorithm`](#algorithm)
       - [`algorithm.fitness`](#algorithmfitness)
+        - [评分函数](#评分函数)
+        - [惩罚函数](#惩罚函数)
       - [`algorithm.operation`](#algorithmoperation)
       - [`algorithm.init`](#algorithminit)
       - [`algorithm.genetic`](#algorithmgenetic)
     - [`melody`](#melody)
     - [`util`](#util)
   - [注意事项](#注意事项)
-  - [待办事项](#待办事项)
 
 ## `Python`环境配置
 
@@ -36,6 +37,7 @@ pip install pygame
 
 ## 代码结构
 
+> [!TIP]
 > `python`中`import`一个文件夹，会默认导入文件夹下的库`__init__.py`
 
 在`./src`目录下，各文件/文件夹功能如下：
@@ -52,29 +54,59 @@ from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
 
 适应度函数。**推荐增加内容**。
 
-- 音程协和程度
+总的来说分为两种：一种是分数（score），介于0到1之间，越高越好，对所有旋律都适用，用于指导旋律进化方向；另一种是惩罚（penalty），对于大部分的音乐惩罚都为0，只有对少数不希望出现的音乐返回一个正值。
+
+##### 评分函数
+
+- 音程协和：对相邻音符计算音程
 
   ```python
   def interval_score(melody: Melody) -> float:...
   ```
 
-- 音符多样性
+- 音符多样：希望音符种类尽量多（慎用）
 
   ```python
   def variety_score(melody: Melody) -> float:...
+  ```
+
+- 符合调性：希望音符尽量落在同一个大/小调上
+
+  ```python
+  def tonality_score(melody: Melody, mode: str) -> float:...
+  ```
+
+- 节奏协和：希望相邻小节的节奏型尽量相近
+
+  ```python
+  def rhythm_score(melody: Melody) -> float:
+  ```
+
+##### 惩罚函数
+
+- 音符密度：不希望音符过于稀疏或过于密集
+
+  ```python
+  def density_penalty(melody: Melody) -> float:
+  ```
+
+- 尾音延长：不希望音乐戛然而止（以八分音符或休止符结尾）
+
+  ```python
+  def stop_penalty(melody: Melody) -> float:
   ```
 
 #### [`algorithm.operation`](./src/algorithm/operation.py)
 
 交叉、变异函数。**推荐增加内容**。
 
-- 单点杂交： $\text{ab}+\text{xy}\to \text{ay}$
+- 单点杂交
 
   ```python
   def one_point_cross(a: Melody, b: Melody, index: int) -> Melody:...
   ```
 
-- 两点杂交： $\text{abc}+\text{xyz}\to \text{ayc}$
+- 两点杂交
 
   ```python
   def two_points_cross(a: Melody, b: Melody, indices: Tuple[int, int]) -> Melody:...
@@ -83,7 +115,41 @@ from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
 - 单点变异
 
   ```python
-  def one_point_mutate(melody: Melody, index: int) -> None:...
+  def one_point_mutate(
+      melody: Melody,
+      index: int,
+      *,
+      note_list: Sequence = Note.NAME_LIST[:-1],
+  ) -> None:
+  ```
+
+- 移调
+
+  ```python
+  def transpose(
+      melody: Melody,
+      delta: Optional[int] = None,
+      indices: Tuple[int, Optional[int]] = (0, None),
+  ) -> None:
+  ```
+
+- 倒影
+
+  ```python
+  def inverse(
+      melody: Melody,
+      s: Optional[int] = None,
+      indices: Tuple[int, Optional[int]] = (0, None),
+  ) -> None:    
+  ```
+
+- 逆行
+
+  ```python
+  def retrograde(
+      melody: Melody,
+      indices: Tuple[int, Optional[int]] = (0, None),
+  ) -> None:
   ```
 
 #### [`algorithm.init`](./src/algorithm/init.py)
@@ -120,12 +186,3 @@ from melody import Note, Melody, save_midi, play_midi
 2. 尽量不要大幅改动框架，或删除已有函数（除非必要）。
 3. 遇到`bug`或有新的提议（关于新功能、对框架的意见），可以直接在群里交流。
 4. 命名最好看到函数就知道什么意思，特别之处要加注释。
-
-## 待办事项
-
-可以根据下面的描述找一点任务做：
-
-- （必做）增加移调、倒影、逆行函数：加入文件`./src/algorithm/operation.py`中即可，效果可以自行验证。可以在`./src/melody/music.py`中找到注释部分，作为参考（注释部分代码实现可能有一些问题）。
-- （选做）找一些音乐片段，写成数组的形式（具体参考`./src/main.py`中的小星星）。之后也许会增加导入的方式。
-- （长期）增加变异函数：加入文件`./src/algorithm/operation.py`中即可，效果可以自行验证。
-- （长期）增加适应度函数：加入文件`./src/algorithm/fitness.py`中即可，效果可以自行验证。

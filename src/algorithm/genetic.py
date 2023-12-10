@@ -69,7 +69,7 @@ class GeneticAlgorithm:
             If True, additional debug info will be printed.
             By default `False`.
         """
-        self.population = population
+        self.population = [m.copy() for m in population]
         self.score_function = lambda x: max(0, score_function(x))
         self.mutate_function = mutate_function
         self.cross_function = cross_function
