@@ -48,10 +48,12 @@ def two_points_cross(a: Melody, b: Melody, indices: Tuple[int, int]) -> Melody:
     return Melody(a[:left] + b[left:right] + a[right:])
 
 
-def one_point_mutate(melody: Melody,
-                     index: int,
-                     *,
-                     note_list: Sequence = Note.NAME_LIST[:-1]) -> None:
+def one_point_mutate(
+    melody: Melody,
+    index: int,
+    *,
+    note_list: Sequence = Note.NAME_LIST[:-1],
+) -> None:
     melody[index] = Note(random.choice(note_list))
 
 
@@ -89,7 +91,10 @@ def transpose(
             note.id += delta
 
 
-def retrograde(melody: Melody, indices: Tuple[int, Optional[int]] = (0, None)) -> None:
+def retrograde(
+        melody: Melody,
+        indices: Tuple[int, Optional[int]] = (0, None),
+) -> None:
     start, stop = indices
     if stop is None:
         stop = len(melody) - 1
@@ -110,9 +115,7 @@ def retrograde(melody: Melody, indices: Tuple[int, Optional[int]] = (0, None)) -
             j += 1
         new_notes = old_notes[i:j] + new_notes
         i = j
-    print([str(note) for note in old_notes])
-    print([str(note) for note in new_notes])
-    print(stop)
+
     melody[start:stop] = new_notes
 
 

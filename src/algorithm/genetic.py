@@ -1,3 +1,4 @@
+import sys
 from typing import List, Tuple, Callable
 from melody import Note, Melody
 import random, math
@@ -68,8 +69,8 @@ class GeneticAlgorithm:
             If True, additional debug info will be printed.
             By default `False`.
         """
-        self.population = population
-        self.score_function = score_function
+        self.population = [m.copy() for m in population]
+        self.score_function = lambda x: max(0, score_function(x))
         self.mutate_function = mutate_function
         self.cross_function = cross_function
         self.threshold = threshold

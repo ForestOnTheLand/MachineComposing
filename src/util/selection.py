@@ -14,8 +14,13 @@ class RouletteSelection:
     def submit(self, value: float) -> None:
         assert value >= 0
         self._value_sum += value
-        if random.random() < value / (self._value_sum + sys.float_info.min):
+
+        if self._value_sum > 0:
+            if random.random() < value / (self._value_sum):
+                self._index = self._submitted_items
+        else:
             self._index = self._submitted_items
+
         self._submitted_items += 1
 
     def done(self) -> bool:

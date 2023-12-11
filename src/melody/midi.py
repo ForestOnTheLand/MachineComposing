@@ -13,7 +13,8 @@ def save_midi(
     time: int = 240,
 ) -> None:
     """
-    Save a melody into a midi file
+    Save a melody into a midi file. For more information about midi files, see
+    https://www.midi.org/specifications.
     
     Parameters
     ----------

@@ -1,4 +1,4 @@
-from typing import List, Sequence, Optional, overload
+from typing import List, Sequence, Optional, overload, Iterator
 from typing_extensions import Self
 import random
 
@@ -96,6 +96,12 @@ class Melody:
         else:
             raise ValueError(f"expect a sequence, given {type(data)}")
 
+    def copy(self) -> Self:
+        return Melody(self)
+
+    def __iter__(self) -> Iterator[Note]:
+        return iter(self.__data)
+
     def __len__(self) -> int:
         return len(self.__data)
 
@@ -133,45 +139,6 @@ class Melody:
             raise ValueError(f"expected Melody, given {type(other)}")
         return all(a.id == b.id for a, b in zip(self.__data, other.__data))
 
-    # TODO: The following functions should be put in algorithm.operation later!
-    # Some might be buggy
-
-    # def transposition(self, delta: int, start: int = 0, stop: Optional[int] = None) -> None:
-    #     if stop is None:
-    #         stop = len(self.__data)
-    #     for i in range(start, stop):
-    #         if self.__data[i] != 0 and self.__data[i] != Note.NUM + 1:
-    #             self.__data[i] += delta
-
-    # def retrograde(self, start: int = 0, stop: Optional[int] = None) -> None:
-    #     if stop is None:
-    #         stop = len(self.__data)
-
-    #     while self.__data[start] == Note.NUM + 1:
-    #         start += 1
-    #     while self.__data[stop] == Note.NUM + 1:
-    #         stop += 1
-
-    #     old = self.__data[start:stop]
-    #     new = []
-
-    #     i: int = 0
-    #     j: int
-
-    #     while i < len(old):
-    #         j = i + 1
-    #         while j < len(old) and old[j] == Note.NUM + 1:
-    #             j += 1
-    #         new = old[i:j] + new
-    #         i = j
-
-    #     self.__data[start:stop] = new
-
-    # def inversion(self, s: int, start: Optional[int] = None, stop: Optional[int] = None) -> None:
-    #     for i in range(*slice(start, stop).indices(len(self.__data))):
-    #         if self.__data[i].id != 0 and self.__data[i].id != Note.NUM + 1:
-    #             self.__data[i] = Note(s - self.__data[i].id)
-
 
 class Tonality:
     """
@@ -179,10 +146,7 @@ class Tonality:
     """
     Note_List: List[int]
 
-    MODES = {
-        "major": [2, 2, 1, 2, 2, 2, 1],
-        "minor": [2, 1, 2, 2, 1, 2, 2]
-    }
+    MODES = {"major": [2, 2, 1, 2, 2, 2, 1], "minor": [2, 1, 2, 2, 1, 2, 2]}
 
     def __init__(self, principal_note: Note | str | int, mode: str):
 
@@ -213,10 +177,71 @@ class Tonality:
         return iter([Note(i) for i in self.Note_List])
 
     def harmony(self, melody: Melody) -> bool:
-        return False not in [note in self.Note_List for note in melody]
+        return all(note in self.Note_List for note in melody)
+        # return False not in [note in self.Note_List for note in melody]
 
     def fitness(self, melody: Melody) -> float:
         return sum([note in self.Note_List for note in melody]) / len(melody)
 
     def __len__(self):
         return len(self.Note_List)
+
+
+TONALITY = {
+    "major": {
+        'C': [1, 3, 5, 7, 8, 10, 12, 13, 15, 17, 19, 20, 22, 24, 25, 27],
+        '#C': [1, 2, 4, 6, 8, 9, 11, 13, 14, 16, 18, 20, 21, 23, 25, 26],
+        'D': [2, 3, 5, 7, 9, 10, 12, 14, 15, 17, 19, 21, 22, 24, 26, 27],
+        '#D': [1, 3, 4, 6, 8, 10, 11, 13, 15, 16, 18, 20, 22, 23, 25, 27],
+        'E': [2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19, 21, 23, 24, 26],
+        'F': [1, 3, 5, 6, 8, 10, 12, 13, 15, 17, 18, 20, 22, 24, 25, 27],
+        '#F': [1, 2, 4, 6, 7, 9, 11, 13, 14, 16, 18, 19, 21, 23, 25, 26],
+        'G': [2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19, 20, 22, 24, 26, 27],
+        '#G': [1, 3, 4, 6, 8, 9, 11, 13, 15, 16, 18, 20, 21, 23, 25, 27],
+        'A': [2, 4, 5, 7, 9, 10, 12, 14, 16, 17, 19, 21, 22, 24, 26],
+        '#A': [1, 3, 5, 6, 8, 10, 11, 13, 15, 17, 18, 20, 22, 23, 25, 27],
+        'B': [2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 21, 23, 24, 26],
+    },
+    "minor": {
+        'C': [1, 3, 4, 6, 8, 10, 11, 13, 15, 16, 18, 20, 22, 23, 25, 27],
+        '#C': [2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19, 21, 23, 24, 26],
+        'D': [1, 3, 5, 6, 8, 10, 12, 13, 15, 17, 18, 20, 22, 24, 25, 27],
+        '#D': [1, 2, 4, 6, 7, 9, 11, 13, 14, 16, 18, 19, 21, 23, 25, 26],
+        'E': [2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19, 20, 22, 24, 26, 27],
+        'F': [1, 3, 4, 6, 8, 9, 11, 13, 15, 16, 18, 20, 21, 23, 25, 27],
+        '#F': [2, 4, 5, 7, 9, 10, 12, 14, 16, 17, 19, 21, 22, 24, 26],
+        'G': [1, 3, 5, 6, 8, 10, 11, 13, 15, 17, 18, 20, 22, 23, 25, 27],
+        '#G': [2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 21, 23, 24, 26],
+        'A': [1, 3, 5, 7, 8, 10, 12, 13, 15, 17, 19, 20, 22, 24, 25, 27],
+        '#A': [1, 2, 4, 6, 8, 9, 11, 13, 14, 16, 18, 20, 21, 23, 25, 26],
+        'B': [2, 3, 5, 7, 9, 10, 12, 14, 15, 17, 19, 21, 22, 24, 26, 27]
+    },
+    "harmonic": {
+        'C': [1, 3, 4, 7, 8, 10, 11, 13, 15, 16, 19, 20, 22, 23, 25, 27],
+        '#C': [2, 4, 5, 8, 9, 11, 12, 14, 16, 17, 20, 21, 23, 24, 26],
+        'D': [1, 3, 5, 6, 9, 10, 12, 13, 15, 17, 18, 21, 22, 24, 25, 27],
+        '#D': [1, 2, 4, 6, 7, 10, 11, 13, 14, 16, 18, 19, 22, 23, 25, 26],
+        'E': [2, 3, 5, 7, 8, 11, 12, 14, 15, 17, 19, 20, 23, 24, 26, 27],
+        'F': [1, 3, 4, 6, 8, 9, 12, 13, 15, 16, 18, 20, 21, 24, 25, 27],
+        '#F': [1, 2, 4, 5, 7, 9, 10, 13, 14, 16, 17, 19, 21, 22, 25, 26],
+        'G': [2, 3, 5, 6, 8, 10, 11, 14, 15, 17, 18, 20, 22, 23, 26, 27],
+        '#G': [3, 4, 6, 7, 9, 11, 12, 15, 16, 18, 19, 21, 23, 24, 27],
+        'A': [1, 4, 5, 7, 8, 10, 12, 13, 16, 17, 19, 20, 22, 24, 25],
+        '#A': [1, 2, 5, 6, 8, 9, 11, 13, 14, 17, 18, 20, 21, 23, 25, 26],
+        'B': [2, 3, 6, 7, 9, 10, 12, 14, 15, 18, 19, 21, 22, 24, 26, 27],
+    },
+    "melodic": {
+        'C': [1, 3, 5, 7, 8, 10, 11, 13, 15, 17, 19, 20, 22, 23, 25, 27],
+        '#C': [2, 4, 6, 8, 9, 11, 12, 14, 16, 18, 20, 21, 23, 24, 26],
+        'D': [1, 3, 5, 7, 9, 10, 12, 13, 15, 17, 19, 21, 22, 24, 25, 27],
+        '#D': [1, 2, 4, 6, 8, 10, 11, 13, 14, 16, 18, 20, 22, 23, 25, 26],
+        'E': [2, 3, 5, 7, 9, 11, 12, 14, 15, 17, 19, 21, 23, 24, 26, 27],
+        'F': [1, 3, 4, 6, 8, 10, 12, 13, 15, 16, 18, 20, 22, 24, 25, 27],
+        '#F': [1, 2, 4, 5, 7, 9, 11, 13, 14, 16, 17, 19, 21, 23, 25, 26],
+        'G': [2, 3, 5, 6, 8, 10, 12, 14, 15, 17, 18, 20, 22, 24, 26, 27],
+        '#G': [1, 3, 4, 6, 7, 9, 11, 13, 15, 16, 18, 19, 21, 23, 25, 27],
+        'A': [2, 4, 5, 7, 8, 10, 12, 14, 16, 17, 19, 20, 22, 24, 26],
+        '#A': [1, 3, 5, 6, 8, 9, 11, 13, 15, 17, 18, 20, 21, 23, 25, 27],
+        'B': [2, 4, 6, 7, 9, 10, 12, 14, 16, 18, 19, 21, 22, 24, 26],
+    }
+}

@@ -2,6 +2,7 @@ from melody import Melody, Note
 import random
 from typing import Sequence
 
+
 class RandomGenerator:
 
     def __init__(self, length: int = 32, name_list: Sequence = Note.NAME_LIST[:-1]) -> None:

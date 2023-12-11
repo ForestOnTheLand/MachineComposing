@@ -1,4 +1,11 @@
+# Don't upload configuration folders, no matter which IDE you use
+# (Since we may use different environments)
 /.vscode
+/.idea
+
+# Some files are used locally
 /test
-/**/__pycache__
 /**/tmp.*
+
+# No need to upload pycache
+/**/__pycache__
