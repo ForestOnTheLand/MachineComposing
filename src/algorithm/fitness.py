@@ -15,7 +15,7 @@ xxx_penalty: Specially punish extremely bad individuals.
 """
 
 from melody import Melody, Note, Tonality, TONALITY
-from typing import List
+from typing import List, Tuple
 
 # Score functions
 
@@ -106,28 +106,44 @@ def rhythm_score(melody: Melody) -> float:
 # Penalty functions
 
 
-def density_penalty(melody: Melody) -> float:
+def density_penalty(
+        melody: Melody,
+        thresholds: Tuple[float, float, float, float] = (1.0, 0.875, 0.5, 0.3125),
+) -> float:
     """Avoid melody with extremely low/high density.
 
     Parameters
     ----------
     `melody` : `Melody`
         melody to evaluate
+    `thresholds` : Tuple[float, float, float, float]
+        Represents (max_threshold, upper_threshold, lower_threshold, min_threshold).
+        By default (1.0, 0.875, 0.5, 0.3125).
     
     Returns
     -------
     `float`
-        Penalty in [0.0, 1.0]. 0.0 for most melodies, but a non-zero value for
-        melodies with extremely low/high density.
+        Penalty in [0.0, 1.0]. 
+        0.0 for densities in range [lower_threshold, upper_threshold];
+        1.0 for densities not in range (min_threshold, max_threshold);
+        and linear penalty in other ranges.
     """
     note_num = sum(1 <= note.id <= Note.NUM for note in melody)
     density = note_num / len(melody)
-    if density > 7 / 8:
-        return (density - 7 / 8) / (1 - 7 / 8)
-    elif density > 16 / 32:
+
+    max_threshold, upper_threshold, lower_threshold, min_threshold = thresholds
+
+    if not 0 <= min_threshold <= lower_threshold < upper_threshold <= max_threshold <= 1:
+        raise ValueError(f"Invalid thresholds: {thresholds}")
+
+    if density > max_threshold:
+        return 1.0
+    elif density > upper_threshold:
+        return (density - upper_threshold) / (max_threshold - upper_threshold)
+    elif density > lower_threshold:
         return 0.0
-    elif density > 10 / 32:
-        return ((16 / 32) - density) / ((16 / 32) - (10 / 32))
+    elif density > min_threshold:
+        return (lower_threshold - density) / (lower_threshold - min_threshold)
     else:
         return 1.0
 

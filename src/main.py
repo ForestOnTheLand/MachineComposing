@@ -25,7 +25,7 @@ def mutate(melody: Melody) -> None:
 
 def evaluator(x: Melody) -> float:
     return (0.4 * F.interval_score(x) + 0.6 * F.rhythm_score(x) +
-            0.6 * F.tonality_score(x, "minor") - F.density_penalty(x) - F.stop_penalty(x))
+            0.6 * F.tonality_score(x, "harmonic") - F.density_penalty(x) - F.stop_penalty(x))
 
 
 if __name__ == '__main__':
