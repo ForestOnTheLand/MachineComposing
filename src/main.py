@@ -1,10 +1,11 @@
 from melody import save_midi, play_midi, Melody, Note, Tonality
-from algorithm import RandomGenerator, GeneticAlgorithm, operation
+from algorithm import RandomGenerator, GeneticAlgorithm
 import algorithm.operation as op
 import algorithm.fitness as F
 import random
 from util import random_interval
 import os, sys, time
+import melodies
 
 little_star = Melody([
     8, 28, 8, 28, 15, 28, 15, 28, 17, 28, 17, 28, 15, 28, 28, 28, 13, 28, 13, 28, 12, 28, 12, 12,
@@ -18,38 +19,38 @@ note_list = [
 ]
 
 
-def mutate(melody: Melody) -> None:
+def mutator(melody: Melody) -> None:
     value = random.random()
     if value < 0.4:
-        operation.one_point_mutate(melody, random.randint(0, 31))
+        op.one_point_mutate(melody)
     elif value < 0.6:
-        operation.transpose(melody, indices=random_interval(len(melody)))
+        op.transpose(melody)
     elif value < 0.8:
-        operation.inverse(melody, indices=random_interval(len(melody)))
+        op.inverse(melody)
     else:
-        operation.retrograde(melody, indices=random_interval(len(melody)))
+        op.retrograde(melody)
 
 
 def evaluator(x: Melody) -> float:
-    return (0.4 * F.interval_score(x) + 0.6 * F.rhythm_score(x) +
-            0.6 * F.tonality_score(x, "harmonic") - F.density_penalty(x) - F.stop_penalty(x))
+    return (0.4 * F.interval_score(x) + 0.2 * F.rhythm_score(x) +
+            0.6 * F.tonality_score(x, "major") - F.density_penalty(x) - F.stop_penalty(x))
 
 
 if __name__ == '__main__':
+    print(len(melodies.d_major_canon))
     generator = RandomGenerator(32, note_list[:-1])
     algorithm = GeneticAlgorithm(
-        [generator() for _ in range(10)],
+        [melodies.d_major_canon for _ in range(10)],
         threshold=0.99,
         mutation_rate=0.1,
-        epoch=100,
-        score_function=lambda x: F.interval_score(x) + max(F.rhythm_score(x) * 2 - 1, 0),
-        mutate_function=mutate,
-        cross_function=lambda x, y: operation.two_points_cross(x, y, random_interval(32)),
+        epoch=500,
+        score_function=evaluator,
+        mutate_function=mutator,
+        cross_function=lambda x, y: op.two_points_cross(x, y, random_interval(32)),
         early_stop=False,
-        debug=True,
     )
-    for melody in algorithm.population:
-        print(melody)
+    # for melody in algorithm.population:
+    #     print(melody)
     algorithm.evolve()
     melody = algorithm.choose_best()
     print(melody)

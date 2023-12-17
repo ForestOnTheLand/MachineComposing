@@ -1,6 +1,7 @@
 from melody import Melody, Note
 from typing import Tuple, List, Sequence, Optional
 import random
+import util
 
 
 def one_point_cross(a: Melody, b: Melody, index: int) -> Melody:
@@ -50,10 +51,12 @@ def two_points_cross(a: Melody, b: Melody, indices: Tuple[int, int]) -> Melody:
 
 def one_point_mutate(
     melody: Melody,
-    index: int,
+    index: Optional[int] = None,
     *,
     note_list: Sequence = Note.NAME_LIST[:-1],
 ) -> None:
+    if index is None:
+        index = random.randint(0, len(melody) - 1)
     melody[index] = Note(random.choice(note_list))
 
 
@@ -74,14 +77,16 @@ def min_note(melody: Melody | List[Note]) -> int:
 
 
 def transpose(
-        melody: Melody,
-        delta: Optional[int] = None,
-        indices: Tuple[int, Optional[int]] = (0, None),
+    melody: Melody,
+    delta: None | int = None,
+    indices: None | Tuple[int, int | None] = None,
 ) -> None:
     """
     Transpose `melody[indices[0]:indices[1]]` by `delta`.
     If not given, `delta` will be selected randomly among all valid values.
     """
+    if indices is None:
+        indices = util.random_interval(len(melody))
     start, stop = indices
     notes = melody[start:stop]
     if delta is None:
@@ -92,9 +97,11 @@ def transpose(
 
 
 def retrograde(
-        melody: Melody,
-        indices: Tuple[int, Optional[int]] = (0, None),
+    melody: Melody,
+    indices: None | Tuple[int, int | None] = None,
 ) -> None:
+    if indices is None:
+        indices = util.random_interval(len(melody))
     start, stop = indices
     if stop is None:
         stop = len(melody) - 1
@@ -120,14 +127,16 @@ def retrograde(
 
 
 def inverse(
-        melody: Melody,
-        s: Optional[int] = None,
-        indices: Tuple[int, Optional[int]] = (0, None),
+    melody: Melody,
+    s: Optional[int] = None,
+    indices: None | Tuple[int, int | None] = None,
 ) -> None:
     """
     Inverse `melody[indices[0]:indices[1]]` by changing `note` to `Note(s - note.id)`.
     If not given, `s` will be selected randomly among all valid values.
     """
+    if indices is None:
+        indices = util.random_interval(len(melody))
     start, stop = indices
     notes = melody[start:stop]
     if s is None:

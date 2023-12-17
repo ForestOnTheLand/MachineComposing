@@ -24,7 +24,6 @@ class GeneticAlgorithm:
 
     # Options
     early_stop: bool
-    debug: bool
 
     def __init__(
         self,
@@ -37,7 +36,6 @@ class GeneticAlgorithm:
         cross_function: Callable[[Melody, Melody], Melody],
         *,
         early_stop: bool = False,
-        debug: bool = False,
     ) -> None:
         """
         constructor of Genetic Algorithm.
@@ -77,7 +75,6 @@ class GeneticAlgorithm:
         self.mutation_rate = mutation_rate
         self.epoch = epoch
         self.early_stop = early_stop
-        self.debug = debug
         self.good_music = []
 
     def _update_score(self) -> None:
@@ -103,9 +100,6 @@ class GeneticAlgorithm:
     def evolve(self) -> None:
         for epoch in range(self.epoch):
             self._update_score()
-            if self.debug:
-                print(f"Epoch {epoch} start")
-                print(self.score)
             if self.early_stop and len(self.good_music):
                 return
             new_population = [self.choose_best()]
@@ -115,8 +109,4 @@ class GeneticAlgorithm:
                     self.mutate_function(child)
                 new_population.append(child)
             self.population = new_population
-            if self.debug:
-                print(f"Epoch {epoch} end")
         self._update_score()
-        if self.debug:
-            print(self.score)

@@ -31,7 +31,7 @@ def interval_score(melody: Melody) -> float:
         interval = abs(note_id[i] - note_id[i - 1])
         if interval >= 13:  # Dissonant interval: Too large
             score += 0
-        elif interval in [0, 3, 4, 5, 7, 8, 9]:  # Consonant interval
+        elif interval in [0, 2, 3, 4, 7, 8, 9]:  # Consonant interval
             score += 1
         else:
             score += 0.5
