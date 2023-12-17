@@ -1,22 +1,15 @@
-from melody import save_midi, play_midi, Melody, Note, Tonality
+from melody import save_midi, play_midi, Melody, Note, Tonality, melodies
 from algorithm import RandomGenerator, GeneticAlgorithm
 import algorithm.operation as op
 import algorithm.fitness as F
 import random
 from util import random_interval
 import os, sys, time
-import melodies
 
 little_star = Melody([
     8, 28, 8, 28, 15, 28, 15, 28, 17, 28, 17, 28, 15, 28, 28, 28, 13, 28, 13, 28, 12, 28, 12, 12,
     10, 28, 10, 28, 8, 28, 28, 28
 ])
-
-# B flat major
-note_list = [
-    "0", "#F3", "G3", "A3", "B3", "#C4", "D4", "E4", "#F4", "G4", "A4", "B4", "#C5", "D5", "E5",
-    "#F5", "G5", "-"
-]
 
 
 def mutator(melody: Melody) -> None:
@@ -37,10 +30,11 @@ def evaluator(x: Melody) -> float:
 
 
 if __name__ == '__main__':
-    print(len(melodies.d_major_canon))
-    generator = RandomGenerator(32, note_list[:-1])
+    generator = RandomGenerator(32)
+
     algorithm = GeneticAlgorithm(
-        [melodies.d_major_canon for _ in range(10)],
+        # Initial population
+        population=[generator() for _ in range(10)],
         threshold=0.99,
         mutation_rate=0.1,
         epoch=500,
@@ -49,8 +43,7 @@ if __name__ == '__main__':
         cross_function=lambda x, y: op.two_points_cross(x, y, random_interval(32)),
         early_stop=False,
     )
-    # for melody in algorithm.population:
-    #     print(melody)
+
     algorithm.evolve()
     melody = algorithm.choose_best()
     print(melody)

@@ -51,7 +51,7 @@ class Note:
     def __str__(self):
         return Note.NAME_LIST[self.__id]
 
-    def __add__(self, delta: int) -> Self:
+    def __add__(self, delta: int) -> 'Note':
         if not isinstance(delta, int):
             raise ValueError(f"expected int, given {type(delta)}")
         return Note(self.__id + delta)
@@ -62,12 +62,12 @@ class Note:
         self.__id += delta
         return self
 
-    def __radd__(self, delta: int) -> Self:
+    def __radd__(self, delta: int) -> 'Note':
         if not isinstance(delta, int):
             raise ValueError(f"expected int, given {type(delta)}")
         return Note(self.__id + delta)
 
-    def __sub__(self, other: int) -> Self:
+    def __sub__(self, other: int) -> 'Note':
         if isinstance(other, int):
             return Note(self.__id - other)
         else:
@@ -96,7 +96,7 @@ class Melody:
         else:
             raise ValueError(f"expect a sequence, given {type(data)}")
 
-    def copy(self) -> Self:
+    def copy(self) -> 'Melody':
         return Melody(self)
 
     def __iter__(self) -> Iterator[Note]:
