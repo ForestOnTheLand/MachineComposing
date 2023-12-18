@@ -96,6 +96,18 @@ from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
   def stop_penalty(melody: Melody) -> float:
   ```
 
+- 休止符：不希望休止符干扰乐曲进行，但不知道休止符在哪里出现合适，不如暂时避免任何休止符
+
+  ```python
+  def rest_penalty(melody: Melody) -> float:
+  ```
+
+- 连续音符：不希望连续过多的八分音符
+
+  ```python
+  def consecutive_penalty(melody: Melody, threshold: int = 8) -> float:
+  ```
+
 #### [`algorithm.operation`](./src/algorithm/operation.py)
 
 交叉、变异函数。**推荐增加内容**。

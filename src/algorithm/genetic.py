@@ -24,12 +24,13 @@ class GeneticAlgorithm:
 
     # Options
     early_stop: bool
-    debug: bool
+
+    # True when there is a good music and self.early_stop
+    _end: bool
 
     def __init__(
         self,
         population: List[Melody],
-        threshold: float,
         mutation_rate: float,
         epoch: int,
         score_function: Callable[[Melody], float],
@@ -37,7 +38,7 @@ class GeneticAlgorithm:
         cross_function: Callable[[Melody, Melody], Melody],
         *,
         early_stop: bool = False,
-        debug: bool = False,
+        threshold: float = 0.0,
     ) -> None:
         """
         constructor of Genetic Algorithm.
@@ -77,15 +78,11 @@ class GeneticAlgorithm:
         self.mutation_rate = mutation_rate
         self.epoch = epoch
         self.early_stop = early_stop
-        self.debug = debug
-        self.good_music = []
+        self._end = False
 
     def _update_score(self) -> None:
         self.score = [self.score_function(melody) for melody in self.population]
-        for score, melody in zip(self.score, self.population):
-            if score > self.threshold:
-                self.good_music.append((melody, score))
-            pass
+        self._end = self.early_stop and any(score > self.threshold for score in self.score)
 
     def choose_random(self) -> Melody:
         selector = RouletteSelection(len(self.score))
@@ -103,10 +100,7 @@ class GeneticAlgorithm:
     def evolve(self) -> None:
         for epoch in range(self.epoch):
             self._update_score()
-            if self.debug:
-                print(f"Epoch {epoch} start")
-                print(self.score)
-            if self.early_stop and len(self.good_music):
+            if self._end:
                 return
             new_population = [self.choose_best()]
             for i in range(1, len(self.population)):
@@ -115,8 +109,4 @@ class GeneticAlgorithm:
                     self.mutate_function(child)
                 new_population.append(child)
             self.population = new_population
-            if self.debug:
-                print(f"Epoch {epoch} end")
         self._update_score()
-        if self.debug:
-            print(self.score)
