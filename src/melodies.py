@@ -29,7 +29,7 @@ seasons_spring_the_first = Melody(
     "- - - - - - - -".split()
 )
 
-# 3. d大调卡农 - 帕西贝尔 - D大调 高 平静
+# 3. d大调卡农 - 帕西贝尔 - D大调（不影响） 高 平静
 d_major_canon = Melody(
     "G5 -  E5 F5 G5 -  E5 F5 "
     "G5 G4 A4 B4 C5 D5 E5 F5 "
@@ -97,6 +97,25 @@ gran_vals = Melody(
     "G4 - C5 - - - - -".split()
 )
 
-midi = gran_vals
+# 11. 妈妈你听我说 - 德彪西 - C大调 - 平静
+little_star = Melody(
+    "C4 - C4 - G4 - G4 - "
+    "A4 - A4 - G4 - - - "
+    "F4 - F4 - E4 - E4 - "
+    "D4 - D4 - C4 - - -".split()
+)
+
+# 12.  subconscious - maki - C大调 - 少 - 悲伤
+subconscious = Melody(
+    "A4 - - - E5 - D5 - "
+    "C5 - B4 - A4 - - - "
+    "- E5 D5 - C5 - B4 - "
+    "A4 - - - E5 - D5 - "
+    "C5 - B4 - A4 - - - "
+    "- E5 D5 - C5 - B4 - "
+    "A4 - - - - - - -".split()
+)
+
+midi = subconscious
 save_midi(midi, "./tmp.mid")
 play_midi("./tmp.mid")
