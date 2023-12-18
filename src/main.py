@@ -25,8 +25,8 @@ def mutator(melody: Melody) -> None:
 
 
 def evaluator(x: Melody) -> float:
-    return (0.4 * F.interval_score(x) + 0.2 * F.rhythm_score(x) +
-            0.6 * F.tonality_score(x, "major") - F.density_penalty(x) - F.stop_penalty(x))
+    return (0.5 * F.interval_score(x) + 0.2 * F.rhythm_score(x) +
+            0.6 * F.tonality_score(x, "B major")[0] - F.density_penalty(x) - F.stop_penalty(x))
 
 
 if __name__ == '__main__':
@@ -36,7 +36,7 @@ if __name__ == '__main__':
         # Initial population
         population=[generator() for _ in range(10)],
         threshold=0.99,
-        mutation_rate=0.1,
+        mutation_rate=0.2,
         epoch=500,
         score_function=evaluator,
         mutate_function=mutator,
@@ -47,6 +47,8 @@ if __name__ == '__main__':
     algorithm.evolve()
     melody = algorithm.choose_best()
     print(melody)
-    print(f"{F.interval_score(melody)}, {F.variety_score(melody)}, {F.rhythm_score(melody)}")
+    print(
+        f"{F.interval_score(melody)}, {F.tonality_score(melody, 'B major')}, {F.rhythm_score(melody)}"
+    )
     save_midi(melody, './tmp.mid')
     play_midi('./tmp.mid')

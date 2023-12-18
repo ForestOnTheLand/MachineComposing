@@ -52,16 +52,49 @@ def variety_score(melody: Melody) -> float:
 """
 
 
-def tonality_score(melody: Melody, mode: str) -> float:
-    if mode not in TONALITY.keys():
-        raise ValueError(f"Invalid mode: {mode}, expected in {list(TONALITY.keys())}")
-    count = 0  # The number of notes in tonality
-    note_id = [note.id for note in melody if 1 <= note.id <= Note.NUM]
-    for note_list in TONALITY["major"].values():
-        count = max(count, sum(note in note_list for note in note_id))
-    if len(note_id) == 0:
-        return 0.0
-    return count / len(note_id)
+def tonality_score(melody: Melody, mode: List[str] | str) -> Tuple[float, None | str]:
+    """
+    mode: str or List[str], such as "major", "minor", "C harmonic", "#A major", ...
+    """
+
+    tonalities = {}
+
+    def parse_mode(s: str) -> None:
+        if not isinstance(s, str):
+            raise ValueError(f"Expected mode: str | List[str], given {type(mode)}")
+        splited = s.split()
+        try:
+            if len(splited) == 1:
+                for key, val in TONALITY[splited[0]].items():
+                    tonalities[key + ' ' + splited[0]] = val
+            elif len(splited) == 2:
+                tonic, m = splited
+                tonalities[tonic + ' ' + m] = TONALITY[m][tonic]
+            else:
+                raise ValueError(f"Unknown mode {s}")
+        except KeyError:
+            raise ValueError(f"Unknown mode {s}")
+
+    if isinstance(mode, list):
+        for s in mode:
+            parse_mode(s)
+    elif isinstance(mode, str):
+        parse_mode(mode)
+    else:
+        raise ValueError(f"Expected mode: str | List[str], given {type(mode)}")
+
+    best_count: int = 0  # The number of notes in tonality
+    best_mode: str | None = None  # The style of melody
+    note_id: List[int] = [note.id for note in melody if 1 <= note.id <= Note.NUM]
+    if not note_id:
+        return 0.0, None
+
+    for key, note_list in tonalities.items():
+        count = sum(note in note_list for note in note_id)
+        if count > best_count:
+            best_count, best_mode = count, key
+
+    return best_count / len(note_id), best_mode
 
 
 """
@@ -100,7 +133,7 @@ def rhythm_score(melody: Melody) -> float:
     for i in range(1, len(bars)):
         diff += rhythm_diff(bars[i - 1], bars[i])
     ratio = 1 - diff / (8 * len(bars))
-    return min(ratio / 0.9, 1.0)
+    return ratio
 
 
 # Penalty functions
