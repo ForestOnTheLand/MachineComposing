@@ -1,4 +1,4 @@
-from melody import Melody, save_midi, play_midi
+from . import Melody, save_midi, play_midi
 """
     有如下分类：
         音符频率：低 中 高
@@ -63,8 +63,13 @@ ewan_lake_second = Melody("E5 - - - - - - - "
                           "A4 - C5 - A4 - E4 - "
                           "C5 - A4 - - - - -".split())
 
-# 8. 月光 - 贝多芬
-seasons_spring_the_first_II = Melody("".split())
+# 8. 生日快乐歌 - C大调 - 中 - 欢乐
+happy_birthday = Melody("G4 G4 A4 - G4 - C5 - "
+                        "B4 - - - G4 G4 A4 - "
+                        "G4 - D5 - C5 - - - "
+                        "G4 G4 G5 - E5 - C5 - "
+                        "B4 - A4 - F5 F5 E5 - "
+                        "C5 - D5 - C5 - - - ".split())
 
 # 9. night theme - PVZ - C大调（有点升降音） - 悲伤
 night_theme_PVZ = Melody("C5 -  A4 - - - B4 - "
@@ -72,12 +77,76 @@ night_theme_PVZ = Melody("C5 -  A4 - - - B4 - "
                          "E4 - A4 - #D4 E4 #G4 - "
                          "A4 - - - - - - -".split())
 
-# 10. 格兰瓦尔 - 塔雷加 - C大调 - 平静
+# 10. 格兰瓦尔 - 塔雷加 - C大调 - 中 - 平静
 gran_vals = Melody("G5 F5 A4 - B4 - E5 D5 "
                    "F4 - G4 - D5 C5 E4 - "
                    "G4 - C5 - - - - -".split())
 
+# 11. 妈妈你听我说 - 德彪西 - C大调 - 中 - 平静
+little_star = Melody(
+    "C4 - C4 - G4 - G4 - "
+    "A4 - A4 - G4 - - - "
+    "F4 - F4 - E4 - E4 - "
+    "D4 - D4 - C4 - - -".split()
+)
+
+# 12.  subconscious - maki - C大调 - 少 - 悲伤
+subconscious = Melody(
+    "A4 - - - E5 - D5 - "
+    "C5 - B4 - A4 - - - "
+    "- E5 D5 - C5 - B4 - "
+    "A4 - - - E5 - D5 - "
+    "C5 - B4 - A4 - - - "
+    "- E5 D5 - C5 - B4 - "
+    "A4 - - - - - - -".split()
+)
+
+# 13. geodash theme - GEODASH - C大调 - 高 - 欢乐
+geodash_theme = Melody(
+    "C4 G4 C4 G4 C4 G4 C4 G4 "
+    "G3 D4 G3 D4 G3 D4 G3 D4 "
+    "A3 E4 A3 E4 A3 E4 A3 E4 "
+    "F3 C4 F3 C4 F3 C4 F3 C4 "
+    "- - - -".split()
+)
+
+# 14. surfing down - unknown - C大调 - 高 - 欢乐
+surfing_down = Melody(
+    "G4 - G4 - G4 F4 E4 F4 "
+    "G4 - A4 G4 - D4 - - "
+    "C4 - C4 - C4 B3 C4 D4 "
+    "E4 - F4 E4 - B3 - - "
+    "A3 - A4 - G4 F4 E4 F4 "
+    "G4 - - C4 C4 - - B3 "
+    "A3 - B3 C4 D4 C4 B3 - "
+    "C4 - - - - - - -".split()
+)
+
+# 15. undertale - Toby Fox - C大调 - 中 - 平静
+undertale = Melody(
+    "C4 - G4 - F4 - C4 - "
+    "E4 - - E4 - - F4 - "
+    "0 0 C4 - F4 - C4 - "
+    "E4 - - E4 - - F4 - "
+    "C4 - G4 - F4 - C4 - "
+    "E4 - - E4 - - F4 - "
+    "0 0 C4 - F4 - A4 - "
+    "G4 - - F4 - - G4 - ".split()
+)
+
+# 16. snowy town - Toby Fox - C大调 - 中 - 平静
+snowy_town = Melody(
+    "G4 - G4 - G4 - G4 - "
+    "F4 - E4 - F4 - G4 - "
+    "- - C5 - - G4 - - "
+    "- - - - - 0 0 0 "
+    "G4 - G4 - G4 - G4 - "
+    "F4 - E4 - F4 - G4 - "
+    "D4 - B3 - C4 - - - "
+    "- - - - - 0 0 0 ".split()
+)
+
 if __name__ == '__main__':
-    midi = gran_vals
+    midi = geodash_theme
     save_midi(midi, "./tmp.mid")
     play_midi("./tmp.mid")
