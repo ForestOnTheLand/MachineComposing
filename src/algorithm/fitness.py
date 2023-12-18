@@ -36,7 +36,6 @@ def interval_score(melody: Melody) -> float:
         else:
             score += 0.5
     return score / (len(note_id) - 1)
-    # return score / (len(melody) - 1)
 
 
 def variety_score(melody: Melody) -> float:
@@ -52,7 +51,7 @@ def variety_score(melody: Melody) -> float:
 """
 
 
-def tonality_score(melody: Melody, mode: List[str] | str) -> Tuple[float, None | str]:
+def get_tonality(melody: Melody, mode: List[str] | str) -> Tuple[float, None | str]:
     """
     mode: str or List[str], such as "major", "minor", "C harmonic", "#A major", ...
     """
@@ -95,6 +94,10 @@ def tonality_score(melody: Melody, mode: List[str] | str) -> Tuple[float, None |
             best_count, best_mode = count, key
 
     return best_count / len(note_id), best_mode
+
+
+def tonality_score(melody: Melody, mode: List[str] | str) -> float:
+    return get_tonality(melody, mode)[0]
 
 
 """
@@ -195,3 +198,47 @@ def stop_penalty(melody: Melody) -> float:
         Penalty in [0.0, 1.0]. 1.0 for melodies with a note at the end, and 0.0 for others.
     """
     return 1.0 if 0 <= melody[-1].id <= Note.NUM else 0.0
+
+
+def rest_penalty(melody: Melody) -> float:
+    """Avoid any rest in melody.
+    
+    Parameters
+    ----------
+    `melody` : `Melody`
+        melody to evaluate
+    
+    Returns
+    -------
+    `float`
+        0.0 for melody without rest('0'), 1.0 for others.
+    """
+    return 1.0 if any(note.id == 0 for note in melody) else 0.0
+
+
+def consecutive_penalty(melody: Melody, threshold: int = 8) -> float:
+    """Avoid too many consecutive eight notes (more than a given threshold).
+    
+    Parameters
+    ----------
+    `melody` : `Melody`
+        melody to evaluate
+    `threshold` : `int`, optional
+        Any melody with more than <threshold> eight notes is unacceptable.
+        By default `8`.
+    
+    Returns
+    -------
+    `float`
+        1.0 for melody with more than <threshold> eight notes, 0.0 otherwise.
+    """
+    if not isinstance(threshold, int):
+        raise ValueError(f"Expected threshold: int, given {type(threshold)}")
+    if threshold <= 0:
+        raise ValueError(f"Expected threshold > 0, given {threshold}")
+
+    length = threshold + 1
+    for i in range(len(melody) - length):
+        if all(1 <= note.id <= Note.NUM for note in melody[i:i + length]):
+            return 1.0
+    return 0.0

@@ -1,7 +1,5 @@
 from melody import save_midi, play_midi, Melody, Note, Tonality, melodies
-from algorithm import RandomGenerator, GeneticAlgorithm
-import algorithm.operation as op
-import algorithm.fitness as F
+from algorithm import RandomGenerator, GeneticAlgorithm, operation as op, fitness as F
 import random
 from util import random_interval
 import os, sys, time
@@ -25,17 +23,16 @@ def mutator(melody: Melody) -> None:
 
 
 def evaluator(x: Melody) -> float:
-    return (0.5 * F.interval_score(x) + 0.2 * F.rhythm_score(x) +
-            0.6 * F.tonality_score(x, "B major")[0] - F.density_penalty(x) - F.stop_penalty(x))
+    return (0.5 * F.interval_score(x) + 0.4 * F.rhythm_score(x) +
+            0.6 * F.tonality_score(x, ["C major"]) - F.density_penalty(x) - F.stop_penalty(x) -
+            F.rest_penalty(x) - F.consecutive_penalty(x, 7))
 
 
 if __name__ == '__main__':
     generator = RandomGenerator(32)
 
     algorithm = GeneticAlgorithm(
-        # Initial population
-        population=[generator() for _ in range(10)],
-        threshold=0.99,
+        population=[generator() for _ in range(10)],  # Initial population
         mutation_rate=0.2,
         epoch=500,
         score_function=evaluator,
@@ -47,8 +44,10 @@ if __name__ == '__main__':
     algorithm.evolve()
     melody = algorithm.choose_best()
     print(melody)
-    print(
-        f"{F.interval_score(melody)}, {F.tonality_score(melody, 'B major')}, {F.rhythm_score(melody)}"
-    )
+    print("{}, {}, {}".format(
+        F.interval_score(melody),
+        F.get_tonality(melody, ['C major']),
+        F.rhythm_score(melody),
+    ))
     save_midi(melody, './tmp.mid')
     play_midi('./tmp.mid')
