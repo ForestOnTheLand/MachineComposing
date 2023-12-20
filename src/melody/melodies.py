@@ -71,7 +71,7 @@ happy_birthday = Melody("G4 G4 A4 - G4 - C5 - "
                         "B4 - A4 - F5 F5 E5 - "
                         "C5 - D5 - C5 - - - ".split())
 
-# 9. night theme - PVZ - C大调（有点升降音） - 悲伤
+# 9. night theme - PVZ - C大调（有点升降音）- 中 - 悲伤
 night_theme_PVZ = Melody("C5 -  A4 - - - B4 - "
                          "A4 - E4 - F4 - F4 - "
                          "E4 - A4 - #D4 E4 #G4 - "
@@ -122,6 +122,7 @@ surfing_down = Melody(
     "C4 - - - - - - -".split()
 )
 
+
 # 15. undertale - Toby Fox - C大调 - 中 - 平静
 undertale = Melody(
     "C4 - G4 - F4 - C4 - "
@@ -146,7 +147,135 @@ snowy_town = Melody(
     "- - - - - 0 0 0 ".split()
 )
 
+# 17. 菊次郎的夏天 - C大调 - 中 - 欢乐
+summer = Melody(
+    "G4 C5 D5 E5 D5 - C5 C5 "
+    "- - - - 0 0 0 0 "
+    "G4 C5 D5 E5 D5 - C5 D5 "
+    "- - E5 - E5 - - - "
+    "G4 C5 D5 E5 D5 - C5 C5 "
+    "- - - - 0 0 0 0 "
+    "G4 C5 D5 E5 D5 - C5 D5 "
+    "- - G5 - E5 - - - ".split()
+)
+
+# 18. 梦中的婚礼 - C大调 - 高 - 平静
+dreaming_wedding = Melody(
+    "A4 A4 B4 B4 C5 C5 B4 B4 "
+    "A4 A4 E4 E4 C4 C4 A3 A3 "
+    "G4 G4 F4 F4 E4 F4 G4 F4 "
+    "- - F4 F4 G4 G4 A4 A4 "
+    "B4 B4 G4 G4 D4 D4 F4 F4 "
+    "E4 E4 D4 E4 F4 E4 - - ".split()
+)
+
+# 19. 起风了前奏 - C大调 - 高 - 平静
+wind_blowing = Melody(
+    "B4 C5 D5 E5 - G4 G5 E5 "
+    "- - - - 0 0 0 0 "
+    "B4 C5 D5 E5 - G4 G5 E5 "
+    "D5 E5 C5 D5 B4 C5 G4 - ".split()
+)
+
+# 20. 两只老虎 - C大调 - 中 - 欢乐
+two_tigers = Melody(
+    "C4 - D4 - E4 - C4 - "
+    "C4 - D4 - E4 - C4 - "
+    "E4 - F4 - G4 - - - "
+    "E4 - F4 - G4 - - - "
+    "G4 A4 G4 F4 E4 - C4 - "
+    "G4 A4 G4 F4 E4 - C4 - "
+    "D4 - G3 - C4 - - - "
+    "D4 - G3 - C4 - - -".split()
+)
+
+# 21. 贝加尔胡畔 - C大调 - 中 - 悲伤
+lake_bank = Melody(
+    "0 0 A3 B3 C4 - G4 - "
+    "F4 - - - - - - - "
+    "0 0 G3 A3 B3 - F4 - "
+    "E4 - - - - - - - "
+    "0 0 E4 E4 A4 - G4 - "
+    "F4 - D4 - - - D4 C4 "
+    "B3 - E4 D4 - - C4 - "
+    "A3 - - - - - - - ".split()
+)
+
+# 22. 圣诞快乐，劳伦斯先生 - C大调 - 中 - 悲伤
+merry_christmas_mr_lawrence = Melody(
+    "D4 E4 D4 A3 D4 - - - "
+    "0 0 D4 E4 D4 E4 G4 E4 "
+    "D4 E4 D4 A3 C4 - - - "
+    "0 0 C5 - B4 G4 E4 - ".split()
+)
+
+# 23. river flows in you - C大调 - 中 - 悲伤
+river_flows_in_you = Melody(
+    "C5 - B4 C5 - C4 B4 C5 "
+    "- C4 G4 C5 - C4 F4 C4 "
+    "E4 - F4 - G4 - E4 - "
+    "D4 - - - - - C4 B3 "
+    "C4 - - - - G3 C4 D4 "
+    "E4 - - - - - E4 F4 "
+    "G4 - - - - - F4 E4 "
+    "D4 - - - - - - -".split()
+)
+
+# 24. 漠河舞厅 - C大调 - 中 - 悲伤
+desert_river_hall = Melody(
+    "G4 - G4 - G4 - A4 B4 "
+    "0 0 E4 - E4 - B4 - "
+    "D5 - C5 - C5 - B4 C5 "
+    "0 0 C5 - C5 - C5 - "
+    "D5 - G4 - D5 - G4 D5 "
+    "0 0 D5 - D5 - F5 - "
+    "F5 - E5 - E5 - D5 E5 "
+    "- - - - 0 0 0 0".split()
+)
+
+# 25. 富士山下前奏 - C大调 - 中 - 平静
+under_Fuji = Melody(
+    "C5 B4 A4 G4 A4 G4 E4 D4 "
+    "E4 D4 C4 B3 C4 B3 A3 G3 "
+    "A3 - B3 C4 D4 - E4 G4 "
+    "G4 - E4 - - - - -".split()
+)
+
+all_melody = [
+    ode_an_die_freude, seasons_spring_the_first,
+    d_major_canon, twelve_tone_equal_temperament,
+    american_patrol, radetzky_march,
+    ewan_lake_second, happy_birthday,
+    happy_birthday, gran_vals,
+    little_star, subconscious,
+    geodash_theme, surfing_down,
+    undertale, snowy_town,
+    summer, dreaming_wedding,
+    wind_blowing, two_tigers,
+    lake_bank, merry_christmas_mr_lawrence,
+    river_flows_in_you, desert_river_hall,
+    under_Fuji
+]
+
+simple_melody = [
+    ode_an_die_freude, seasons_spring_the_first,
+    ewan_lake_second, happy_birthday,
+    night_theme_PVZ, gran_vals,
+    little_star, undertale,
+    snowy_town, summer,
+    two_tigers, lake_bank,
+    merry_christmas_mr_lawrence, desert_river_hall,
+    under_Fuji
+]
+
+complex_melody = [
+    d_major_canon, twelve_tone_equal_temperament,
+    american_patrol, radetzky_march,
+    geodash_theme, surfing_down,
+    dreaming_wedding, wind_blowing
+]
+
 if __name__ == '__main__':
-    midi = geodash_theme
+    midi = american_patrol
     save_midi(midi, "./tmp.mid")
     play_midi("./tmp.mid")
