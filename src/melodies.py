@@ -1,4 +1,4 @@
-from . import Melody, save_midi, play_midi
+from melody import Melody, save_midi, play_midi
 """
     有如下分类：
         音符频率：低 中 高
@@ -71,7 +71,7 @@ happy_birthday = Melody("G4 G4 A4 - G4 - C5 - "
                         "B4 - A4 - F5 F5 E5 - "
                         "C5 - D5 - C5 - - - ".split())
 
-# 9. night theme - PVZ - C大调（有点升降音）- 中 - 悲伤
+# 9. night theme - PVZ - C大调（有点升降音） - 悲伤
 night_theme_PVZ = Melody("C5 -  A4 - - - B4 - "
                          "A4 - E4 - F4 - F4 - "
                          "E4 - A4 - #D4 E4 #G4 - "
@@ -121,7 +121,6 @@ surfing_down = Melody(
     "A3 - B3 C4 D4 C4 B3 - "
     "C4 - - - - - - -".split()
 )
-
 
 # 15. undertale - Toby Fox - C大调 - 中 - 平静
 undertale = Melody(
@@ -240,40 +239,6 @@ under_Fuji = Melody(
     "A3 - B3 C4 D4 - E4 G4 "
     "G4 - E4 - - - - -".split()
 )
-
-all_melody = [
-    ode_an_die_freude, seasons_spring_the_first,
-    d_major_canon, twelve_tone_equal_temperament,
-    american_patrol, radetzky_march,
-    ewan_lake_second, happy_birthday,
-    happy_birthday, gran_vals,
-    little_star, subconscious,
-    geodash_theme, surfing_down,
-    undertale, snowy_town,
-    summer, dreaming_wedding,
-    wind_blowing, two_tigers,
-    lake_bank, merry_christmas_mr_lawrence,
-    river_flows_in_you, desert_river_hall,
-    under_Fuji
-]
-
-simple_melody = [
-    ode_an_die_freude, seasons_spring_the_first,
-    ewan_lake_second, happy_birthday,
-    night_theme_PVZ, gran_vals,
-    little_star, undertale,
-    snowy_town, summer,
-    two_tigers, lake_bank,
-    merry_christmas_mr_lawrence, desert_river_hall,
-    under_Fuji
-]
-
-complex_melody = [
-    d_major_canon, twelve_tone_equal_temperament,
-    american_patrol, radetzky_march,
-    geodash_theme, surfing_down,
-    dreaming_wedding, wind_blowing
-]
 
 if __name__ == '__main__':
     midi = american_patrol
