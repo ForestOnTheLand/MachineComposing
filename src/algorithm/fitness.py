@@ -93,6 +93,23 @@ def tonality_score(melody: Melody, mode: List[str] | str) -> float:
     return get_tonality(melody, mode)[0]
 
 
+def rhythm_score(melody: Melody) -> float:
+    """This function works bad. Be careful.
+    """
+
+    def rhythm_diff(A: List[Note], B: List[Note]) -> int:
+        return sum((a.id == Note.NUM + 1) != (b.id == Note.NUM + 1) for a, b in zip(A, B))
+
+    bars = []
+    diff = 0
+    for i in range(len(melody) // 8):
+        bars.append(melody[i * 8:(i + 1) * 8])
+    for i in range(1, len(bars)):
+        diff += rhythm_diff(bars[i - 1], bars[i])
+    ratio = 1 - diff / (8 * len(bars))
+    return ratio
+
+
 """
     采用现代旋律创作中的"稳定-不稳定-稳定"理论
     在大调式中，将主和弦的三个音视为稳定音
@@ -190,21 +207,81 @@ def stable_score(melody: Melody) -> float:
     return score
 
 
-def rhythm_score(melody: Melody) -> float:
-    """This function works bad. Be careful.
-    """
-
-    def rhythm_diff(A: List[Note], B: List[Note]) -> int:
-        return sum((a.id == Note.NUM + 1) != (b.id == Note.NUM + 1) for a, b in zip(A, B))
-
-    bars = []
-    diff = 0
-    for i in range(len(melody) // 8):
-        bars.append(melody[i * 8:(i + 1) * 8])
-    for i in range(1, len(bars)):
-        diff += rhythm_diff(bars[i - 1], bars[i])
-    ratio = 1 - diff / (8 * len(bars))
-    return ratio
+"""
+判断旋律是否以稳定音开始、以稳定音结束
+均符合返回1,一端符合返回0.5,均不符合返回0
+"""
+def boundary_score(melody: Melody) -> float:
+    mode2note = {'C' : 8,
+                     '#C' : 9,
+                     'D' : 10,
+                     '#D' : 11,
+                     'E' : 12,
+                     'F' : 13,
+                     '#F' : 14,
+                     'G' : 15,
+                     '#G' : 16,
+                     'A' : 17,
+                     '#A' : 18,
+                     'B' : 19}
+    if len(melody) <= 1:
+        return 1.0
+    score = 0.0
+    note_id = [note.id for note in melody if 1 <= note.id <= Note.NUM]
+    best_mode = get_tonality(melody, mode='major')[1].split(' ')[0]
+    main_note = mode2note[best_mode]
+    stable_notes = [main_note]
+    unstable_notes = []
+    very_unstable_notes = []
+    i = main_note
+    while (i < 28):
+        if (i + 2 < 28):
+            unstable_notes.append(i+2)
+        if (i + 4 < 28):
+            stable_notes.append(i+4)
+        if (i + 5 < 28):
+            very_unstable_notes.append(i+5)
+        if (i + 7 < 28):
+            stable_notes.append(i+7)
+        if (i + 9 < 28):
+            unstable_notes.append(i+9)
+        if (i + 11 < 28):
+            very_unstable_notes.append(i+11)
+        if (i + 12 < 28):
+            stable_notes.append(i+12)
+        i = i + 12
+    while (i > 0):
+        if (i - 1 > 0):
+            very_unstable_notes.append(i-1)
+        if (i - 3 > 0):
+            unstable_notes.append(i-3)
+        if (i - 5 > 0):
+            stable_notes.append(i-4)
+        if (i - 7 > 0):
+            very_unstable_notes.append(i-7)
+        if (i - 8 > 0):
+            stable_notes.append(i-8)
+        if (i - 10 > 0):
+            unstable_notes.append(i-10)
+        if (i - 12 > 0):
+            stable_notes.append(i-12)
+        i = i - 12
+    notes = [-1]
+    for index in range(len(note_id)):
+        note = note_id[index]
+        if ((note in stable_notes) and (notes[len(notes)-1] != 0)):
+            notes.append(0)
+        elif ((note in unstable_notes) and (notes[len(notes)-1] != 1)):
+            notes.append(1)
+        elif ((note in very_unstable_notes) and (notes[len(notes)-1] != 2)):
+            notes.append(2)
+        else:
+            notes.append(3)
+    if (notes[1] == 0):
+        score += 0.5
+    if (notes[len(notes)-1] == 0):
+        score += 0.5
+    return score
 
 
 # Penalty functions
