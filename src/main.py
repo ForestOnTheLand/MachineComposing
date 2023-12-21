@@ -33,7 +33,8 @@ if __name__ == '__main__':
     generator = RandomGenerator(32)
 
     algorithm = GeneticAlgorithm(
-        population=[generator() for _ in range(10)],  # Initial population
+        # population=[generator() for _ in range(10)],  # Initial population
+        population=melodies.simple_melody[:10],
         mutation_rate=0.3,
         epoch=1000,
         score_function=evaluator,
@@ -45,10 +46,11 @@ if __name__ == '__main__':
     algorithm.evolve()
     melody = algorithm.choose_best()
     print(melody)
-    print("{}, {}, {}".format(
+    print("{}, {}, {}, {}".format(
         F.interval_score(melody),
         F.get_tonality(melody, "major"),
         F.rhythm_score(melody),
+        F.stable_score(melody),
     ))
     save_midi(melody, './tmp.mid')
     play_midi('./tmp.mid')

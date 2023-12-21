@@ -28,13 +28,13 @@ class Note:
                     self.__id = id
                     break
             else:
-                raise ValueError(f"invalid note name: {note}")
+                raise ValueError(f"Invalid note name: {note}")
         elif isinstance(note, int):
             if not 0 <= note <= 28:
-                raise ValueError(f"expect note in [0, 28], given {note}")
+                raise ValueError(f"Expect note in [0, 28], given {note}")
             self.__id = note
         else:
-            raise ValueError(f"invalid note type: {type(note)}")
+            raise ValueError(f"Can not convert {type(note)} to note")
 
     @property
     def id(self) -> int:
@@ -43,9 +43,9 @@ class Note:
     @id.setter
     def id(self, id: int) -> None:
         if not isinstance(id, int):
-            raise ValueError(f"expected int, given {type(id)}")
+            raise ValueError(f"Expected int, given {type(id)}")
         if not 0 <= id <= Note.NUM + 1:
-            raise ValueError(f"expect note in [0, 28], given {id}")
+            raise ValueError(f"Expect note in [0, 28], given {id}")
         self.__id = id
 
     def __str__(self):
@@ -94,10 +94,14 @@ class Melody:
         if isinstance(data, (Melody, Sequence)):
             self.__data = [Note(a) for a in data]
         else:
-            raise ValueError(f"expect a sequence, given {type(data)}")
+            raise ValueError(f"Can not convert {type(data)} to melody")
 
-    def copy(self) -> 'Melody':
-        return Melody(self)
+    def pad_or_cut_to(self, length: int) -> 'Melody':
+        from math import ceil
+        if length <= len(self):
+            return Melody(self[:length])
+        else:
+            return Melody((self.__data * ceil(length / len(self)))[:length])
 
     def __iter__(self) -> Iterator[Note]:
         return iter(self.__data)

@@ -1,5 +1,5 @@
 import sys
-from typing import List, Tuple, Callable
+from typing import List, Tuple, Callable, Sequence
 from melody import Note, Melody
 import random, math
 from util.selection import RouletteSelection
@@ -30,7 +30,7 @@ class GeneticAlgorithm:
 
     def __init__(
         self,
-        population: List[Melody],
+        population: Sequence[Melody | Sequence[int | str | Note]],
         mutation_rate: float,
         epoch: int,
         score_function: Callable[[Melody], float],
@@ -39,10 +39,10 @@ class GeneticAlgorithm:
         *,
         early_stop: bool = False,
         threshold: float = 0.0,
+        length: None | int = None,
     ) -> None:
         """
         constructor of Genetic Algorithm.
-        
         
         Parameters
         ----------
@@ -66,11 +66,20 @@ class GeneticAlgorithm:
         `early_stop` : `bool`, optional
             If True, the algorithm will stop immediately when a good music is found.
             By default `False`.
-        `debug` : `bool`, optional
-            If True, additional debug info will be printed.
-            By default `False`.
         """
-        self.population = [m.copy() for m in population]
+        if not isinstance(population, Sequence):
+            raise ValueError(f"Expected population: Sequence, given {type(population)}")
+        if not population:
+            raise ValueError(f"Empty population")
+
+        if length is None:
+            self.population = [Melody(m) for m in population]
+            if any(len(melody) != len(self.population[0]) for melody in self.population):
+                raise ValueError(f"Inconsistent length for melodies in population, "
+                                 f"given length {[len(m) for m in self.population]}")
+        else:
+            self.population = [Melody(m).pad_or_cut_to(length) for m in population]
+
         self.score_function = lambda x: max(0, score_function(x))
         self.mutate_function = mutate_function
         self.cross_function = cross_function
