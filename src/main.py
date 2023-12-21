@@ -23,9 +23,9 @@ def mutator(melody: Melody) -> None:
 
 
 def evaluator(x: Melody) -> float:
-    return (0.5 * F.interval_score(x) + 0.4 * F.rhythm_score(x) +
-            0.6 * F.tonality_score(x, ["C major"]) - F.density_penalty(x) - F.stop_penalty(x) -
-            F.rest_penalty(x) - F.consecutive_penalty(x, 7))
+    return (0.75 * F.interval_score(x) + 0.4 * F.rhythm_score(x) +
+            0.6 * F.tonality_score(x, "major") - F.density_penalty(x) - F.stop_penalty(x) -
+            F.rest_penalty(x) - F.consecutive_penalty(x, 7) - F.range_penalty(x, 18))
 
 
 if __name__ == '__main__':
@@ -33,8 +33,8 @@ if __name__ == '__main__':
 
     algorithm = GeneticAlgorithm(
         population=[generator() for _ in range(10)],  # Initial population
-        mutation_rate=0.2,
-        epoch=500,
+        mutation_rate=0.3,
+        epoch=1000,
         score_function=evaluator,
         mutate_function=mutator,
         cross_function=lambda x, y: op.two_points_cross(x, y, random_interval(32)),
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     print(melody)
     print("{}, {}, {}".format(
         F.interval_score(melody),
-        F.get_tonality(melody, ['C major']),
+        F.get_tonality(melody, "major"),
         F.rhythm_score(melody),
     ))
     save_midi(melody, './tmp.mid')

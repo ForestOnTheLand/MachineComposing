@@ -242,3 +242,17 @@ def consecutive_penalty(melody: Melody, threshold: int = 8) -> float:
         if all(1 <= note.id <= Note.NUM for note in melody[i:i + length]):
             return 1.0
     return 0.0
+
+
+def range_penalty(melody: Melody, threshold: int) -> float:
+
+    def get_range(melody: Melody) -> int:
+        minp, maxp = Note.NUM, 1
+        for note in melody:
+            if note.id != 0 and note.id != Note.NUM + 1:
+                minp = min(minp, note.id)
+                maxp = max(maxp, note.id)
+        diff = maxp - minp
+        return diff if diff >= 0 else Note.NUM
+
+    return 1.0 if get_range(melody) > threshold else 0
