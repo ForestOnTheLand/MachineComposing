@@ -44,10 +44,12 @@ if __name__ == '__main__':
     algorithm.evolve()
     melody = algorithm.choose_best()
     print(melody)
-    print("{}, {}, {}".format(
+    print("Scores interval:{}, tonality:{}, rhythm:{}, stable:{}, boundary:{}".format(
         F.interval_score(melody),
         F.get_tonality(melody, ['C major']),
         F.rhythm_score(melody),
+        F.stable_score(melody),
+        F.boundary_score(melody),
     ))
     save_midi(melody, './tmp.mid')
     play_midi('./tmp.mid')
