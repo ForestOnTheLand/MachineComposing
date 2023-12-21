@@ -119,7 +119,80 @@ def tonality_score(melody: Melody, mode: List[str] | str) -> float:
 
 
 def stable_score(melody: Melody) -> float:
-    ...
+    mode2note = {'C' : 8,
+                     '#C' : 9,
+                     'D' : 10,
+                     '#D' : 11,
+                     'E' : 12,
+                     'F' : 13,
+                     '#F' : 14,
+                     'G' : 15,
+                     '#G' : 16,
+                     'A' : 17,
+                     '#A' : 18,
+                     'B' : 19}
+    if len(melody) <= 1:
+        return 1.0
+    score = 0.0
+    note_id = [note.id for note in melody if 1 <= note.id <= Note.NUM]
+    best_mode = get_tonality(melody, mode='major')[1].split(' ')[0]
+    main_note = mode2note[best_mode]
+    stable_notes = [main_note]
+    unstable_notes = []
+    very_unstable_notes = []
+    i = main_note
+    while (i < 28):
+        if (i + 2 < 28):
+            unstable_notes.append(i+2)
+        if (i + 4 < 28):
+            stable_notes.append(i+4)
+        if (i + 5 < 28):
+            very_unstable_notes.append(i+5)
+        if (i + 7 < 28):
+            stable_notes.append(i+7)
+        if (i + 9 < 28):
+            unstable_notes.append(i+9)
+        if (i + 11 < 28):
+            very_unstable_notes.append(i+11)
+        if (i + 12 < 28):
+            stable_notes.append(i+12)
+        i = i + 12
+    while (i > 0):
+        if (i - 1 > 0):
+            very_unstable_notes.append(i-1)
+        if (i - 3 > 0):
+            unstable_notes.append(i-3)
+        if (i - 5 > 0):
+            stable_notes.append(i-4)
+        if (i - 7 > 0):
+            very_unstable_notes.append(i-7)
+        if (i - 8 > 0):
+            stable_notes.append(i-8)
+        if (i - 10 > 0):
+            unstable_notes.append(i-10)
+        if (i - 12 > 0):
+            stable_notes.append(i-12)
+        i = i - 12
+    notes = [-1]
+    stable_position = []
+    for index in range(len(note_id)):
+        note = note_id[index]
+        if ((note in stable_notes) and (notes[len(notes)-1] != 0)):
+            notes.append(0)
+            stable_position.append(index)
+        elif ((note in unstable_notes) and (notes[len(notes)-1] != 1)):
+            notes.append(1)
+        elif ((note in very_unstable_notes) and (notes[len(notes)-1] != 2)):
+            notes.append(2)
+    count = 0
+    for index in range(1, len(stable_position)):
+        if (stable_position[index] - stable_position[index-1] < 4):
+            count += 1
+    if (len(stable_position) > 1):
+        score = count/(len(stable_position))
+    else:
+        score = 0
+    return score
 
 
 def rhythm_score(melody: Melody) -> float:

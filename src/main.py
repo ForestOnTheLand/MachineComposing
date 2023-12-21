@@ -23,9 +23,10 @@ def mutator(melody: Melody) -> None:
 
 
 def evaluator(x: Melody) -> float:
-    return (0.75 * F.interval_score(x) + 0.4 * F.rhythm_score(x) +
-            0.6 * F.tonality_score(x, "major") - F.density_penalty(x) - F.stop_penalty(x) -
-            F.rest_penalty(x) - F.consecutive_penalty(x, 7) - F.range_penalty(x, 18))
+    return (0.5 * F.interval_score(x) + 0.4 * F.rhythm_score(x) +
+            0.6 * F.tonality_score(x, ["C major"]) + 0.5 * F.stable_score(x) -
+            F.density_penalty(x) - F.stop_penalty(x) - F.rest_penalty(x) -
+            F.consecutive_penalty(x, 7) - F.range_penalty(x, 18))
 
 
 if __name__ == '__main__':
