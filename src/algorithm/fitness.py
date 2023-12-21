@@ -15,7 +15,7 @@ xxx_penalty: Specially punish extremely bad individuals.
 """
 
 from melody import Melody, Note, Tonality, TONALITY
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Callable
 
 # Score functions
 
@@ -36,13 +36,6 @@ def interval_score(melody: Melody) -> float:
         else:
             score += 0.5
     return score / (len(note_id) - 1)
-
-
-def variety_score(melody: Melody) -> float:
-    record = [0 for _ in range(Note.NUM + 2)]
-    for note in melody:
-        record[note.id] = 1
-    return min(2 * sum(record) / Note.NUM, 1.0)
 
 
 """
@@ -330,4 +323,12 @@ def range_penalty(melody: Melody, threshold: int) -> float:
         diff = maxp - minp
         return diff if diff >= 0 else Note.NUM
 
-    return 1.0 if get_range(melody) > threshold else 0
+    return 1.0 if get_range(melody) > threshold else 0.0
+
+
+def variety_penalty(melody: Melody, threshold: int) -> float:
+    record = [0] * (Note.NUM + 2)
+    for note in melody:
+        record[note.id] = 1
+    variety = sum(record[1:-1])
+    return 1.0 if variety < threshold else 0.0

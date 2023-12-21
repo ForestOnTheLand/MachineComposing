@@ -53,11 +53,13 @@ def one_point_mutate(
     melody: Melody,
     index: Optional[int] = None,
     *,
-    note_list: Sequence = Note.NAME_LIST[:-1],
+    note_list: Sequence = Note.NAME_LIST,
 ) -> None:
     if index is None:
         index = random.randint(0, len(melody) - 1)
-    melody[index] = Note(random.choice(note_list))
+    note = Note(random.choice(note_list))
+    if note.id != Note.NUM + 1 or index != 0:
+        melody[index] = note
 
 
 def max_note(melody: Melody | List[Note]) -> int:

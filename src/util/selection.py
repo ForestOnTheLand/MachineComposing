@@ -15,10 +15,7 @@ class RouletteSelection:
         assert value >= 0
         self._value_sum += value
 
-        if self._value_sum > 0:
-            if random.random() < value / (self._value_sum):
-                self._index = self._submitted_items
-        else:
+        if random.random() < value / (self._value_sum + sys.float_info.min):
             self._index = self._submitted_items
 
         self._submitted_items += 1
