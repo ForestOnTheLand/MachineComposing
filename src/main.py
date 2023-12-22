@@ -4,6 +4,9 @@ import random
 from util import random_interval
 import os, sys, time
 
+# Fixed random seed
+# random.seed(10)
+
 little_star = Melody([
     8, 28, 8, 28, 15, 28, 15, 28, 17, 28, 17, 28, 15, 28, 28, 28, 13, 28, 13, 28, 12, 28, 12, 12,
     10, 28, 10, 28, 8, 28, 28, 28
@@ -24,7 +27,7 @@ def mutator(melody: Melody) -> None:
 
 def evaluator(x: Melody) -> float:
     return (0.8 * F.interval_score(x) + 0.4 * F.rhythm_score(x) +
-            0.6 * F.tonality_score(x, 'harmonic') + 0.2 * F.stable_score(x) - F.density_penalty(x) -
+            0.6 * F.tonality_score(x, 'major') + 0.3 * F.stable_score(x) - F.density_penalty(x) -
             F.stop_penalty(x) - F.rest_penalty(x) - F.consecutive_penalty(x, 7) -
             F.range_penalty(x, 18) - F.variety_penalty(x, 5))
 
@@ -48,7 +51,7 @@ if __name__ == '__main__':
     print(melody)
     print("Scores interval:{}, tonality:{}, rhythm:{}, stable:{}, boundary:{}".format(
         F.interval_score(melody),
-        F.get_tonality(melody, 'harmonic'),
+        F.get_tonality(melody, 'major'),
         F.rhythm_score(melody),
         F.stable_score(melody),
         F.boundary_score(melody),

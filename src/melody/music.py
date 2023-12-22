@@ -1,4 +1,4 @@
-from typing import List, Sequence, Optional, overload, Iterator
+from typing import List, Sequence, Optional, overload, Iterator, Tuple
 from typing_extensions import Self
 import random
 
@@ -249,3 +249,56 @@ TONALITY = {
         'B': [2, 4, 6, 7, 9, 10, 12, 14, 16, 18, 19, 21, 22, 24, 26],
     }
 }
+
+
+def get_tonality(melody: Melody, mode: List[str] | str) -> Tuple[float, str]:
+    """
+    mode: str or List[str], such as "major", "minor", "C harmonic", "#A major", ...
+    """
+
+    tonalities = {}
+
+    def parse_mode(s: str) -> None:
+        if not isinstance(s, str):
+            raise ValueError(f"Expected mode: str | List[str], given {type(mode)}")
+        splited = s.split()
+        try:
+            if len(splited) == 1:
+                for key, val in TONALITY[splited[0]].items():
+                    tonalities[key + ' ' + splited[0]] = val
+            elif len(splited) == 2:
+                tonic, m = splited
+                tonalities[tonic + ' ' + m] = TONALITY[m][tonic]
+            else:
+                raise ValueError(f"Unknown mode {s}")
+        except KeyError:
+            raise ValueError(f"Unknown mode {s}")
+
+    if isinstance(mode, list):
+        for s in mode:
+            parse_mode(s)
+    elif isinstance(mode, str):
+        parse_mode(mode)
+    else:
+        raise ValueError(f"Expected mode: str | List[str], given {type(mode)}")
+
+    best_count: int = 0  # The number of notes in tonality
+    best_mode: str = ""  # The style of melody
+    note_id: List[int] = [note.id for note in melody if 1 <= note.id <= Note.NUM]
+    if not note_id:
+        return 0.0, ""
+
+    for key, note_list in tonalities.items():
+        count = sum(note in note_list for note in note_id)
+        if count > best_count:
+            best_count, best_mode = count, key
+
+    return best_count / len(note_id), best_mode
+
+
+# 0: Stable, 1: Unstable, 2: Very-Unstable, 3: Not-in-Tonality
+STABILITY = [0, 3, 1, 3, 0, 2, 3, 0, 3, 1, 3, 2]
+
+
+def get_stability(note: int, main_note: int) -> int:
+    return 3 if note in [0, Note.NUM + 1] else STABILITY[(note - main_note) % 12]
