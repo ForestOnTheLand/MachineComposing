@@ -5,7 +5,7 @@ from util import random_interval
 import os, sys, time
 
 # Fixed random seed
-# random.seed(10)
+# random.seed(3407)  # Some magic number here!
 
 little_star = Melody([
     8, 28, 8, 28, 15, 28, 15, 28, 17, 28, 17, 28, 15, 28, 28, 28, 13, 28, 13, 28, 12, 28, 12, 12,
@@ -30,7 +30,7 @@ def evaluator(x: Melody) -> float:
             0.6 * F.tonality_score(x, 'major') + 0.2 * F.stable_score(x) +
             0.6 * F.boundary_score(x) - F.density_penalty(x) - F.stop_penalty(x) -
             F.rest_penalty(x) - F.consecutive_penalty(x, 7) - F.range_penalty(x, 18) -
-            F.variety_penalty(x, 5) - 0.5 * F.lonely_penalty(x))
+            F.variety_penalty(x, 5) - F.lonely_penalty(x))
 
 
 if __name__ == '__main__':
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     algorithm = GeneticAlgorithm(
         population=[generator() for _ in range(10)],  # Initial population
         mutation_rate=0.2,
-        epoch=1000,
+        epoch=500,
         score_function=evaluator,
         mutate_function=mutator,
         cross_function=lambda x, y: op.two_points_cross(x, y, random_interval(32)),
