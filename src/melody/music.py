@@ -251,7 +251,7 @@ TONALITY = {
 }
 
 
-def get_tonality(melody: Melody, mode: List[str] | str) -> Tuple[float, str]:
+def get_tonality(melody: Melody, mode: List[str] | str) -> Tuple[float, str | None]:
     """
     mode: str or List[str], such as "major", "minor", "C harmonic", "#A major", ...
     """
@@ -283,10 +283,10 @@ def get_tonality(melody: Melody, mode: List[str] | str) -> Tuple[float, str]:
         raise ValueError(f"Expected mode: str | List[str], given {type(mode)}")
 
     best_count: int = 0  # The number of notes in tonality
-    best_mode: str = ""  # The style of melody
+    best_mode: str | None = None  # The style of melody
     note_id: List[int] = [note.id for note in melody if 1 <= note.id <= Note.NUM]
     if not note_id:
-        return 0.0, ""
+        return 0.0, None
 
     for key, note_list in tonalities.items():
         count = sum(note in note_list for note in note_id)

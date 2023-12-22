@@ -84,12 +84,12 @@ def rhythm_score(melody: Melody) -> float:
 
 
 def stable_score(melody: Melody) -> float:
-    if len(melody) <= 1:
-        return 1.0
     score = 0.0
     note_id = [note.id for note in melody if 1 <= note.id <= Note.NUM]
-    best_mode = get_tonality(melody, mode='major')[1].split(' ')[0]
-    main_note = Note(best_mode + '4').id
+    tonality = get_tonality(melody, mode='major')[1]
+    if tonality is None:
+        return 0.0
+    main_note = Note(tonality.split(' ')[0] + '4').id
 
     last_stability = -1
     stable_position = []
@@ -120,11 +120,11 @@ def stable_score(melody: Melody) -> float:
 
 
 def boundary_score(melody: Melody) -> float:
-    if len(melody) <= 1:
-        return 1.0
     note_id = [note.id for note in melody if 1 <= note.id <= Note.NUM]
-    best_mode = get_tonality(melody, mode='major')[1].split(' ')[0]
-    main_note = Note(best_mode + '4').id
+    tonality = get_tonality(melody, mode='major')[1]
+    if tonality is None:
+        return 0.0
+    main_note = Note(tonality.split(' ')[0] + '4').id
     return ((get_stability(note_id[0], main_note) == 0) +
             (get_stability(note_id[-1], main_note) == 0)) / 2
 

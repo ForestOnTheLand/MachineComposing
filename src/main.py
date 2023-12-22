@@ -7,11 +7,6 @@ import os, sys, time
 # Fixed random seed
 # random.seed(3407)  # Some magic number here!
 
-little_star = Melody([
-    8, 28, 8, 28, 15, 28, 15, 28, 17, 28, 17, 28, 15, 28, 28, 28, 13, 28, 13, 28, 12, 28, 12, 12,
-    10, 28, 10, 28, 8, 28, 28, 28
-])
-
 
 def mutator(melody: Melody) -> None:
     value = random.random()
@@ -50,6 +45,7 @@ if __name__ == '__main__':
     algorithm.evolve()
     melody = algorithm.choose_best()
     print(melody)
+    print("Total score: {:.2f}".format(evaluator(melody)))
     print(
         "Scores interval:{:.2f}, tonality:{}, rhythm:{:.2f}, stable:{:.2f}, boundary:{:.2f}".format(
             F.interval_score(melody),

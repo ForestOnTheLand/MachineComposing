@@ -80,7 +80,11 @@ class GeneticAlgorithm:
         else:
             self.population = [Melody(m).pad_or_cut_to(length) for m in population]
 
-        self.score_function = lambda x: max(0.1, score_function(x))
+        def _score_function(x: Melody) -> float:
+            score = score_function(x)
+            return score if score > 0.1 else 0.1 * pow(2, score)
+
+        self.score_function = _score_function
         self.mutate_function = mutate_function
         self.cross_function = cross_function
         self.threshold = threshold
