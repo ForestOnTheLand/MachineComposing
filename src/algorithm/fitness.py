@@ -409,3 +409,19 @@ def variety_penalty(melody: Melody, threshold: int) -> float:
         record[note.id] = 1
     variety = sum(record[1:-1])
     return 1.0 if variety < threshold else 0.0
+
+
+def lonely_penalty(melody: Melody, threshold: int = 9):
+    """
+    Avoid lonely note that change from and to its neighbor notes more than threshold, default 9 (perfect fifth)
+    Example: B3 - G4 - A3, then G4 is a lonely note
+    """
+    score = 0.0
+    count = 0
+    note_id = [note.id for note in melody if 1 <= note.id <= Note.NUM]
+    for index in range(1, len(note_id)-1):
+        if (abs(note_id[index] - note_id[index-1]) > threshold and 
+            abs(note_id[index] - note_id[index+1]) > threshold):
+            count += 1
+    score = count/(len(note_id)-2)
+    return score
