@@ -256,7 +256,7 @@ def variety_penalty(melody: Melody, threshold: int) -> float:
     return 1.0 if variety < threshold else 0.0
 
 
-def lonely_penalty(melody: Melody, threshold: int = 9):
+def lonely_penalty(melody: Melody, threshold: int = 9) -> float:
     """
     Avoid lonely note that change from and to its neighbor notes more than threshold, default 9 (perfect fifth)
     Example: B3 - G4 - A3, then G4 is a lonely note

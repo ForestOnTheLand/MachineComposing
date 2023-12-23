@@ -1,7 +1,7 @@
 import pygame
-from mido import Message, MidiFile, MidiTrack
+from mido import Message, MetaMessage, MidiFile, MidiTrack
 from typing import List
-from .music import Note, Melody
+from .music import Note, Melody, get_tonality
 
 
 def save_midi(
@@ -11,6 +11,7 @@ def save_midi(
     instrument: int = 0,
     velocity: int = 64,
     time: int = 240,
+    tonality: str | None = None,
 ) -> None:
     """
     Save a melody into a midi file. For more information about midi files, see
@@ -32,7 +33,9 @@ def save_midi(
     `time` : `int`, optional
         Time of a eighth note.
         By default `240`
-    
+    `tonality`:
+        valid values: A A#m Ab Abm Am B Bb Bbm Bm C C# C#m Cb Cm D D#m Db Dm E Eb Ebm Em F F# F#m Fm G G#m Gb Gm
+
     Raises
     ------
     `ValueError`
@@ -43,8 +46,13 @@ def save_midi(
 
     mid = MidiFile()
     track = MidiTrack()
+    mid.ticks_per_beat = 2 * time
     mid.tracks.append(track)
+
     track.append(Message('program_change', program=instrument))
+    track.append(MetaMessage('time_signature', numerator=4, denominator=4))
+    if tonality is not None:
+        track.append(MetaMessage('key_signature', key=tonality))
 
     length: int = len(melody)
     i: int = 0
@@ -69,7 +77,42 @@ def save_midi(
         else:
             raise ValueError(f"argument melody: invalid melody[{i}] = {melody[i]}")
 
+    track.append(MetaMessage('end_of_track', time=time * pause))
     mid.save(path)
+
+
+def read_midi(path: str) -> Melody:
+    """parse a midi file into Melody.
+    """
+    file = MidiFile(path, type=0)
+    track = file.tracks[0]
+    eight_note = file.ticks_per_beat / 2
+    note_list = []
+    for message in track:
+        if not message.is_meta:
+            print(message)
+            assert message.time % eight_note == 0, "Durations must be multiples of eigth_note"
+            duration = int(message.time / eight_note)
+            if message.type == 'note_on':
+                assert 53 <= message.note <= Note.NUM + 52, "Note must be in [F3, G5]"
+                if duration:
+                    note_list += [0] + [Note.NUM + 1] * (duration - 1)
+                note_list += [message.note - 52]
+            elif message.type == 'note_off':
+                assert 53 <= message.note <= Note.NUM + 52, "Note must be in [F3, G5]"
+                if duration:
+                    note_list += [Note.NUM + 1] * (duration - 1)
+                else:
+                    note_list.pop()
+        else:
+            if message.type == 'end_of_track':
+                assert message.time % eight_note == 0, "Durations must be multiples of eigth_note"
+                duration = int(message.time / eight_note)
+                if duration:
+                    note_list += [0] + [Note.NUM + 1] * (duration - 1)
+                break
+
+    return Melody(note_list)
 
 
 def play_midi(path: str, *, volume: float = 1.0) -> None:
