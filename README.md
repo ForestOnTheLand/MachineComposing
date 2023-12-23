@@ -1,8 +1,8 @@
 # 音乐与数学 大作业
 
 - [音乐与数学 大作业](#音乐与数学-大作业)
-  - [`Python`环境配置](#python环境配置)
   - [文件结构](#文件结构)
+  - [`Python`环境配置](#python环境配置)
   - [代码结构](#代码结构)
     - [`algorithm`](#algorithm)
       - [`algorithm.fitness`](#algorithmfitness)
@@ -15,6 +15,15 @@
     - [`util`](#util)
   - [注意事项](#注意事项)
 
+## 文件结构
+
+其他文件/文件夹功能如下：
+
+- `./resource/`: 本项目参考文献。
+- `./src/`: 本项目源代码位置。
+- `./report/`: 本项目报告。
+- `./README.md`: 本文件
+
 ## `Python`环境配置
 
 本项目需要`mido`库与`pygame`库的安装。环境配置如下：
@@ -25,15 +34,6 @@ conda activate music
 pip install mido
 pip install pygame
 ```
-
-## 文件结构
-
-其他文件/文件夹功能如下：
-
-- `./resource`: 内含多个`.pdf`文件，均是与本项目相关的内容，可做参考文献。**强烈建议**将有用的文章加入其中！
-- `./src`: 代码位置。会在代码结构一节详细说明
-- `./.gitignore`: `git`提交时忽略什么文件
-- `./README.md`: 本文件
 
 ## 代码结构
 

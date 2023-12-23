@@ -39,6 +39,7 @@ class GeneticAlgorithm:
         *,
         early_stop: bool = False,
         threshold: float = 0.0,
+        record: bool = False,
         length: None | int = None,
     ) -> None:
         """
@@ -91,6 +92,7 @@ class GeneticAlgorithm:
         self.mutation_rate = mutation_rate
         self.epoch = epoch
         self.early_stop = early_stop
+        self.record = record
         self._end = False
 
     def _update_score(self) -> None:
@@ -111,11 +113,15 @@ class GeneticAlgorithm:
         return self.population[best_id]
 
     def evolve(self) -> None:
+        if self.record:
+            self.music = []
         for epoch in range(self.epoch):
             self._update_score()
             if self._end:
                 return
             new_population = [self.choose_best()]
+            if self.record:
+                self.music += new_population
             for i in range(1, len(self.population)):
                 child = self.cross_function(self.choose_random(), self.choose_random())
                 if random.random() < self.mutation_rate:
@@ -123,3 +129,5 @@ class GeneticAlgorithm:
                 new_population.append(child)
             self.population = new_population
         self._update_score()
+        if self.record:
+            self.music += [self.choose_best()]
