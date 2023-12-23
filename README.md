@@ -82,6 +82,28 @@ from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
   def rhythm_score(melody: Melody) -> float:
   ```
 
+- 旋律中的稳定与不稳定音：
+  > 采用现代旋律创作中的"稳定-不稳定-稳定"理论。
+    在大调式中，将主和弦的三个音视为稳定音，二、六音视为较不稳定音，四、七音视为极不稳定音。
+  
+  旋律要以稳定音开始、以稳定音结束：
+
+  ```python
+  def boundary_score(melody: Melody) -> float:
+  ```
+
+  旋律允许的变化如下：
+  - 稳定 - 较不稳定 - 稳定
+  - 稳定 - 极不稳定 - 稳定
+  - 稳定 - 较不稳定 - 极不稳定 - 稳定
+  - 稳定 - 极不稳定 - 较不稳定 - 稳定
+
+  返回对此理论的符合程度：
+
+  ```python
+  def stable_score(melody: Melody) -> float:
+  ```
+
 ##### 惩罚函数
 
 - 音符密度：不希望音符过于稀疏或过于密集
@@ -108,6 +130,24 @@ from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
   def consecutive_penalty(melody: Melody, threshold: int = 8) -> float:
   ```
 
+- 音高范围：不希望旋律中的音符音高相差过多
+
+  ```python
+  def range_penalty(melody: Melody, threshold: int) -> float:
+  ```
+
+- 音符种类数：不希望旋律中的音符种类过少
+
+  ```python
+  def variety_penalty(melody: Melody, threshold: int) -> float:
+  ```
+
+- 孤立音符：不希望有孤立的音符（即和两端的音符音高差距过大）
+
+  ```python
+  def lonely_penalty(melody: Melody, threshold: int = 9) -> float:
+  ```
+
 #### [`algorithm.operation`](./src/algorithm/operation.py)
 
 交叉、变异函数。**推荐增加内容**。
@@ -131,7 +171,7 @@ from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
       melody: Melody,
       index: int,
       *,
-      note_list: Sequence = Note.NAME_LIST[:-1],
+      note_list: Sequence = Note.NAME_LIST,
   ) -> None:
   ```
 
@@ -141,7 +181,7 @@ from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
   def transpose(
       melody: Melody,
       delta: Optional[int] = None,
-      indices: Tuple[int, Optional[int]] = (0, None),
+      indices: None | Tuple[int, int | None] = None,
   ) -> None:
   ```
 
@@ -151,7 +191,7 @@ from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
   def inverse(
       melody: Melody,
       s: Optional[int] = None,
-      indices: Tuple[int, Optional[int]] = (0, None),
+      indices: None | Tuple[int, int | None] = None,
   ) -> None:    
   ```
 
@@ -160,7 +200,7 @@ from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
   ```python
   def retrograde(
       melody: Melody,
-      indices: Tuple[int, Optional[int]] = (0, None),
+      indices: None | Tuple[int, int | None] = None,
   ) -> None:
   ```
 

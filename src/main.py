@@ -39,7 +39,6 @@ if __name__ == '__main__':
         mutate_function=mutator,
         cross_function=lambda x, y: op.two_points_cross(x, y, random_interval(32)),
         early_stop=False,
-        # length=32,
     )
 
     algorithm.evolve()
