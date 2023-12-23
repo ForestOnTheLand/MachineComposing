@@ -22,10 +22,10 @@ def mutator(melody: Melody) -> None:
 
 def evaluator(x: Melody) -> float:
     return (0.8 * F.interval_score(x) + 0.4 * F.rhythm_score(x) +
-            0.6 * F.tonality_score(x, 'major') + 0.2 * F.stable_score(x) +
+            0.4 * F.tonality_score(x, 'five') + 0.2 * F.tonality_score(x, ['major', 'minor']) + 0.3 * F.stable_score(x) +
             0.6 * F.boundary_score(x) - F.density_penalty(x) - F.stop_penalty(x) -
             F.rest_penalty(x) - F.consecutive_penalty(x, 7) - F.range_penalty(x, 18) -
-            F.variety_penalty(x, 5) - F.lonely_penalty(x))
+            F.variety_penalty(x, 5) - F.lonely_penalty(x) - F.frequent_penalty(x))
 
 
 if __name__ == '__main__':
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     algorithm = GeneticAlgorithm(
         population=[generator() for _ in range(10)],  # Initial population
         mutation_rate=0.2,
-        epoch=500,
+        epoch=1000,
         score_function=evaluator,
         mutate_function=mutator,
         cross_function=lambda x, y: op.two_points_cross(x, y, random_interval(32)),
@@ -47,9 +47,10 @@ if __name__ == '__main__':
     print(melody)
     print("Total score: {:.2f}".format(evaluator(melody)))
     print(
-        "Scores interval:{:.2f}, tonality:{}, rhythm:{:.2f}, stable:{:.2f}, boundary:{:.2f}".format(
+        "Scores interval:{:.2f}, tonality:{}, tonality:{}, rhythm:{:.2f}, stable:{:.2f}, boundary:{:.2f}".format(
             F.interval_score(melody),
             F.get_tonality(melody, 'major'),
+            F.get_tonality(melody, 'five'),
             F.rhythm_score(melody),
             F.stable_score(melody),
             F.boundary_score(melody),
