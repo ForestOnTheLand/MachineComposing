@@ -26,7 +26,7 @@ def evaluator(x: Melody) -> float:
             0.6 * F.tonality_score(x, 'C major') + 0.2 * F.stable_score(x) +
             0.6 * F.boundary_score(x) - F.density_penalty(x) - F.stop_penalty(x) -
             F.rest_penalty(x) - F.consecutive_penalty(x, 7) - F.range_penalty(x, 18) -
-            F.variety_penalty(x, 5) - F.lonely_penalty(x))
+            F.variety_penalty(x, 5) - F.lonely_penalty(x) - F.frequent_penalty(x))
 
 
 if __name__ == '__main__':
@@ -48,7 +48,8 @@ if __name__ == '__main__':
     print(melody)
     print("Total score: {:.2f}".format(evaluator(melody)))
     print(
-        "Scores interval:{:.2f}, tonality:{}, rhythm:{:.2f}, stable:{:.2f}, boundary:{:.2f}".format(
+        "Scores interval:{:.2f}, tonality:{}, tonality:{}, rhythm:{:.2f}, stable:{:.2f}, boundary:{:.2f}"
+        .format(
             F.interval_score(melody),
             F.get_tonality(melody, 'C major'),
             F.rhythm_score(melody),

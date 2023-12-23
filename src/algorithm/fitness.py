@@ -267,3 +267,15 @@ def lonely_penalty(melody: Melody, threshold: int = 9) -> float:
                 abs(note_id[index] - note_id[index + 1]) > threshold):
             return 1.0
     return 0.0
+
+def frequent_penalty(melody: Melody, span: int = 5, occur: int = 3):
+    note_id = [note.id for note in melody if 1 <= note.id <= Note.NUM]
+    for i in range(len(note_id)):
+        record = [0] * (Note.NUM + 2)
+        for j in note_id[i:i+span]:
+            record[j] += 1
+        for item in record:
+            if item >= occur:
+                return 1.0
+    return 0.0
+
