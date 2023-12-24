@@ -90,7 +90,7 @@ def read_midi(path: str) -> Melody:
     note_list = []
     for message in track:
         if not message.is_meta:
-            print(message)
+            # print(message)
             assert message.time % eight_note == 0, "Durations must be multiples of eigth_note"
             duration = int(message.time / eight_note)
             if message.type == 'note_on':

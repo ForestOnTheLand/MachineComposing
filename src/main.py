@@ -23,10 +23,10 @@ def mutator(melody: Melody) -> None:
 
 def evaluator(x: Melody) -> float:
     return (0.8 * F.interval_score(x) + 0.4 * F.rhythm_score(x) +
-            0.6 * F.tonality_score(x, 'C major') + 0.2 * F.stable_score(x) +
+            0.6 * F.tonality_score(x, 'minor') + 0.2 * F.stable_score(x) +
             0.6 * F.boundary_score(x) - F.density_penalty(x) - F.stop_penalty(x) -
             F.rest_penalty(x) - F.consecutive_penalty(x, 7) - F.range_penalty(x, 18) -
-            F.variety_penalty(x, 5) - F.lonely_penalty(x) - F.frequent_penalty(x))
+            F.variety_penalty(x, 5) - F.lonely_penalty(x))
 
 
 if __name__ == '__main__':
@@ -44,12 +44,25 @@ if __name__ == '__main__':
     )
 
     algorithm.evolve()
+
+    for i in [10, 50, 100, 200, 500, 1000]:
+        print(evaluator(algorithm.music[i]))
+
+    # x, y = [], []
+    # for i, music in enumerate(algorithm.music):
+    #     x.append(i)
+    #     y.append(evaluator(music))
+    # plt.plot(x, y)
+    # plt.xlabel('epoch')
+    # plt.ylabel('score')
+    # plt.show()
+    # exit(0)
+
     melody = algorithm.choose_best()
     print(melody)
     print("Total score: {:.2f}".format(evaluator(melody)))
     print(
-        "Scores interval:{:.2f}, tonality:{}, tonality:{}, rhythm:{:.2f}, stable:{:.2f}, boundary:{:.2f}"
-        .format(
+        "Scores interval:{:.2f}, tonality:{}, rhythm:{:.2f}, stable:{:.2f}, boundary:{:.2f}".format(
             F.interval_score(melody),
             F.get_tonality(melody, 'C major'),
             F.rhythm_score(melody),
@@ -57,4 +70,4 @@ if __name__ == '__main__':
             F.boundary_score(melody),
         ))
     save_midi(melody, './tmp.mid')
-    play_midi('./tmp.mid')
+    # play_midi('./tmp.mid')
