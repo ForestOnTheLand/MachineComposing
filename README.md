@@ -58,28 +58,20 @@ from algorithm import RandomGenerator, GeneticAlgorithm, operation, fitness
 遗传算法流程图如下：
 
 ```mermaid
-graph TD
-
+graph TD;
 start["随机生成初始种群"] 
---> score(["利用估值函数对旋律评分"])
-
-
-
+--> score(["利用估值函数对旋律评分"]);
 score --> select{{"根据轮盘赌算法
 选择亲本"}}
 --> cross(("交叉")) --> mutate(("变异、移调
 倒影、逆行
-（均有一定概率）"))
-
-score -- 上一代种群中最好的
-直接进入下一代 --> next["下一代"]
-mutate --> next
-
-next -- 循环 --> score
-
+（均有一定概率）"));
+score -- "上一代种群中最好的
+直接进入下一代" --> next["下一代"];
+mutate --> next;
+next-- "循环" -->score;
 next --> output["循环若干次
-直至算法结束"]
-
+直至算法结束"];
 ```
 
 #### [`algorithm.fitness`](./src/algorithm/fitness.py)
