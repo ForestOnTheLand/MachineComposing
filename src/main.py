@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import os, sys, time
 
 # Fixed random seed
-random.seed(3407)  # Some magic number here!
+# random.seed(3407)  # Some magic number here!
 
 
 def mutator(melody: Melody) -> None:
@@ -30,6 +30,7 @@ def evaluator(x: Melody) -> float:
 
 
 if __name__ == '__main__':
+    print('Generating music, please wait...')
     generator = RandomGenerator(32)
 
     algorithm = GeneticAlgorithm(
@@ -60,3 +61,4 @@ if __name__ == '__main__':
         ))
     save_midi(melody, './tmp.mid')
     play_midi('./tmp.mid')
+    input('Press any key to quit...')
